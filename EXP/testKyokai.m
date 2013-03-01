@@ -1,0 +1,129 @@
+function [x,resnorm,residual,exitflag,output,lambda] = testKyokai(ALLFeatures, T_pos, T_neg)
+
+%clear all;
+%fprintf('Load EXPSamples...'); tic
+%load('../storage/EXPSamples.mat'); % 'tpos','tneg','T_pos', 'T_neg','trainingdata','testingdata'
+%fprintf([num2str(toc), ' seconds \n']);
+
+%fprintf('Load EXPALLFeatures...'); tic
+%load('../storage/EXPALLFeatures.mat'); % ALLFeatures
+%fprintf([num2str(toc), ' seconds \n']);
+
+% ------------------
+%ディスプレイと目との距離(m)
+set_length_d2e = 1.33;
+%解像度(pixel)とそれに対応する実寸(m)
+set_kaizodo = 768.0;
+set_nagasa = 0.802;
+get_angle = @(d) (atan(d*set_nagasa/set_kaizodo/set_length_d2e)*180.0/pi);
+get_distance = @(a) (tan(a*pi/180.0)*set_length_d2e*set_kaizodo/set_nagasa);
+% ------------------
+
+kyokai = {get_distance(6), get_distance(9), get_distance(12), get_distance(16), get_distance(22), get_distance(80)};
+
+M = 768/3; % size of the downsized images we work with
+N = 1366/3;
+fixsize = [fix(M) fix(N)];
+
+%for trial=1:1
+
+x = [];
+resnorm = [];
+residual = [];
+exitflag = [];
+output = [];
+lambda = [];
+samples = [];
+
+featall = zeros(400*200*length(kyokai), 9);
+labelall = zeros(400*200*length(kyokai), 1);
+matrixall_idx = 0;
+
+for k=1:length(kyokai)
+
+    feat = zeros(400*200, 9);
+    label = zeros(400*200, 1);
+    matrix_idx = 0;
+    fprintf('Start : %d, ', k); tic
+    for imgidx=1:400
+        %if((length(find(T_pos{k}(:,3)==imgidx.*ones(size(T_pos{k},1),1)))==100)&&(length(find(T_neg{k}(:,3)==imgidx.*ones(size(T_neg{k},1),1)))==100))
+        T_pos_t = T_pos{k}(find(T_pos{k}(:,3)==imgidx.*ones(size(T_pos{k},1),1)),:);
+        T_neg_t = T_neg{k}(find(T_neg{k}(:,3)==imgidx.*ones(size(T_neg{k},1),1)),:);
+        
+        %{
+        c = imresize(ALLFeatures{imgidx}.graphbase.top_level_feat_maps{1}, fixsize, 'bilinear');
+        intensity = imresize(ALLFeatures{imgidx}.graphbase.top_level_feat_maps{2}, fixsize, 'bilinear');
+        o = imresize(ALLFeatures{imgidx}.graphbase.top_level_feat_maps{3}, fixsize, 'bilinear');
+        
+        for j=1:100
+            matrix_idx = matrix_idx + 1;
+            feat(matrix_idx, :)=[c(T_pos_t(j,2),T_pos_t(j,1)) intensity(T_pos_t(j,2),T_pos_t(j,1)) o(T_pos_t(j,2),T_pos_t(j,1))];
+            label(matrix_idx, 1) = 1;
+            matrix_idx = matrix_idx + 1;
+            feat(matrix_idx, :)=[c(T_neg_t(j,2),T_neg_t(j,1)) intensity(T_neg_t(j,2),T_neg_t(j,1)) o(T_neg_t(j,2),T_neg_t(j,1))];
+            label(matrix_idx, 1) = 0;
+        end
+        %}
+        
+        c1 = imresize(ALLFeatures{imgidx}.graphbase.scale_maps{1}{1}, fixsize, 'bilinear');
+        c2 = imresize(ALLFeatures{imgidx}.graphbase.scale_maps{1}{2}, fixsize, 'bilinear');
+        c3 = imresize(ALLFeatures{imgidx}.graphbase.scale_maps{1}{3}, fixsize, 'bilinear');
+        i1 = imresize(ALLFeatures{imgidx}.graphbase.scale_maps{2}{1}, fixsize, 'bilinear');
+        i2 = imresize(ALLFeatures{imgidx}.graphbase.scale_maps{2}{2}, fixsize, 'bilinear');
+        i3 = imresize(ALLFeatures{imgidx}.graphbase.scale_maps{2}{3}, fixsize, 'bilinear');
+        o1 = imresize(ALLFeatures{imgidx}.graphbase.scale_maps{3}{1}, fixsize, 'bilinear');
+        o2 = imresize(ALLFeatures{imgidx}.graphbase.scale_maps{3}{2}, fixsize, 'bilinear');
+        o3 = imresize(ALLFeatures{imgidx}.graphbase.scale_maps{3}{3}, fixsize, 'bilinear');
+
+        for j=1:min(size(T_pos_t,1),size(T_neg_t,1))
+            matrix_idx = matrix_idx + 1;
+            feat(matrix_idx, :)=[...
+            c1(T_pos_t(j,2),T_pos_t(j,1)) c2(T_pos_t(j,2),T_pos_t(j,1)) c3(T_pos_t(j,2),T_pos_t(j,1)) ...
+            i1(T_pos_t(j,2),T_pos_t(j,1)) i2(T_pos_t(j,2),T_pos_t(j,1)) i3(T_pos_t(j,2),T_pos_t(j,1)) ...
+            o1(T_pos_t(j,2),T_pos_t(j,1)) o2(T_pos_t(j,2),T_pos_t(j,1)) o3(T_pos_t(j,2),T_pos_t(j,1)) ...
+            ];
+            label(matrix_idx, 1) = 1;
+            matrix_idx = matrix_idx + 1;
+            feat(matrix_idx, :)=[...
+            c1(T_neg_t(j,2),T_neg_t(j,1)) c3(T_neg_t(j,2),T_neg_t(j,1)) c3(T_neg_t(j,2),T_neg_t(j,1)) ...
+            i1(T_neg_t(j,2),T_neg_t(j,1)) i2(T_neg_t(j,2),T_neg_t(j,1)) i3(T_neg_t(j,2),T_neg_t(j,1)) ...
+            o1(T_neg_t(j,2),T_neg_t(j,1)) o2(T_neg_t(j,2),T_neg_t(j,1)) o3(T_neg_t(j,2),T_neg_t(j,1)) ...
+            ];
+            label(matrix_idx, 1) = 0;
+        end
+    end
+    
+    feat = feat(1:matrix_idx, :);
+    label = label(1:matrix_idx, :);
+    [x_,resnorm_,residual_,exitflag_,output_,lambda_]  =  lsqnonneg(feat, label);
+
+    x = [x; x_'];
+    resnorm = [resnorm; resnorm_'];
+    exitflag = [exitflag; exitflag_'];
+    output = [output; output_'];
+    lambda = [lambda; lambda_'];
+    samples = [samples; size(feat,1)'];
+    
+    fprintf('samples: %d, ...', size(feat,1));
+    
+    fprintf([num2str(toc), ' seconds \n']);
+    %for xi=1:length(x_)
+    %    fprintf('%f,', x_(xi));
+    %end
+    %fprintf('\n');
+    
+    featall(matrixall_idx+1:matrixall_idx+matrix_idx,:)=feat;
+    labelall(matrixall_idx+1:matrixall_idx+matrix_idx,:)=label;
+    matrixall_idx = matrixall_idx + matrix_idx;
+end
+
+featall=featall(1:matrixall_idx,:);
+labelall=labelall(1:matrixall_idx,:);
+
+[x_,resnorm_,residual_,exitflag_,output_,lambda_]  =  lsqnonneg(featall, labelall);
+x = [x; x_'];
+resnorm = [resnorm; resnorm_'];
+exitflag = [exitflag; exitflag_'];
+output = [output; output_'];
+lambda = [lambda; lambda_'];
+samples = [samples; size(feat,1)'];
