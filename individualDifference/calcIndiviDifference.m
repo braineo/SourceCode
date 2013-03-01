@@ -1,4 +1,4 @@
-function [mInfo_tune, mNSS_tune, opt] = calcIndiviDifference(opt_set, EXPALLFixations, ALLFeatures, faceFeatures,indiviNum)
+function [mInfo_tune, mNSS_tune, opt] = calcIndiviDifference(opt_set, EXPALLFixations, ALLFeatures, faceFeatures, indiviNum)
 
 load RandomSeed_20121220
 opt = opt_set;
@@ -21,7 +21,7 @@ for trial=1:opt.n_trial
 
     rand_param = sum(RandomSeed{trial});
     opt.rand_param{trial} = rand_param;
-    [sample_saccade, testingsamles] = getTTsamples(rand_param, EXPALLFixations, opt);
+    [sample_saccade, testingsamles] = getIndiTTsamples(rand_param, EXPALLFixations, opt, indiviNum);
 
     fprintf('Creating infos_base...\n'); tic
     infos_base = zeros(M*N, 8);
@@ -229,5 +229,6 @@ end
 
 opt.end_time = datestr(now,'dd-mmm-yyyy HH:MM:SS');
 time_stamp = datestr(now,'yyyymmddHHMMSS');
-savefile = sprintf('./storage/EXP_%s_angle%dregion%d_%s.mat', opt.time_stamp, opt.enable_angle, opt.n_region, time_stamp);
+savefile = sprintf('../Output/storage/EXP_%s_angle%dregion%dTestSub%d_%s.mat', ...
+        opt.time_stamp, opt.enable_angle, opt.n_region, indiviNum, time_stamp);
 save(savefile,'opt','mNSS_tune','mInfo_tune','mTraining','-v7.3');

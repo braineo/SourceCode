@@ -1,7 +1,7 @@
  %show feature average map of the 400 experiment picture
 %
 
-% load('./storage/sevenFeatures.mat');
+% load('../Output/storage/sevenFeatures.mat');
 close all;
 colorFeatNum = 2;
 intensityFeatNum = 1;

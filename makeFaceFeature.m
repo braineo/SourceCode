@@ -1,5 +1,5 @@
 clear all
-stimfolder = 'C:\Users\yeb\Documents\MATLAB\final_resize\';
+stimfolder = '../Resource/final_resize/';
 files=dir(fullfile(stimfolder,'*.jpg'));
 [filenames{1:size(files,1)}] = deal(files.name);
 
@@ -12,7 +12,7 @@ N = round(width/minimize_scale);
 gauss = @(omega, d) (1/(omega * sqrt(2 * pi))) * exp(-((d.^2) ./ (2*(omega.^2))));
 
 fprintf('readCSV...\n'); tic
-data = readCSV('C:\Users\yeb\Documents\MATLAB\201111face.com/result.csv');
+data = readCSV('../Resource/201111face.com/result.csv');
 fprintf([num2str(toc), ' seconds \n']);
 
 fprintf('Creating infos_base...\n'); tic
@@ -88,5 +88,5 @@ for imgnum=1:400
 end
 
 
-savefile = './storage/EXPfaceFeatures.mat';
+savefile = '../Output/storage/EXPfaceFeatures.mat';
 save(savefile, 'faceFeatures', '-v7.3');

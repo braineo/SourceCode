@@ -6,7 +6,7 @@
 
 %% Read picture library
 %
-stimfolder = '/Volumes/davinci/MATLAB/final_resize';
+stimfolder = '../Resource/final_resize';
 % stimfolder = './ramdompics';
 files=dir(fullfile(stimfolder,'*.jpg'));
 [filenames{1:size(files,1)}] = files.name;
@@ -55,5 +55,5 @@ for fmapi=1:length(mapnames)
     end
 end
 %% Save files
-savefile = './storage/allRawFeatures.mat';
+savefile = '../Output/storage/allRawFeatures.mat';
 save(savefile, 'rawFeatureMaps','-v7.3');

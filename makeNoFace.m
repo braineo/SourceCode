@@ -1,5 +1,5 @@
 clear all
-stimfolder = 'C:\hg\Master\data\exp\EXP201109\images\final_resize\';
+stimfolder = '../Resource/final_resize\';
 files=dir(fullfile(stimfolder,'*.jpg'));
 [filenames{1:size(files,1)}] = deal(files.name);
 

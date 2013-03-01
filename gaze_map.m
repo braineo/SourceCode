@@ -1,4 +1,4 @@
-% load('.\storage\exallfications.mat');
+% load('../Output/storage/exallfications.mat');
 
 gazeMap = zeros(1366,768);
 max_x=0;

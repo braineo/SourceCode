@@ -1,6 +1,6 @@
 %% This file is to show Activation maps
 
-%load('./storage/saltFeatureMaps.mat');
+%load('../Output/storage/saltFeatureMaps.mat');
 
 close all;
 dims = size(saltFeatureMaps{1}{1}.map);

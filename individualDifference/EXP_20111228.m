@@ -5,9 +5,9 @@ info.start_time = datestr(now,'dd-mmm-yyyy HH:MM:SS');
 
 % ----------------- TEMPLATE -----------------------------
 fprintf('Load EXPALLFixations, EXPALLFeatures...'); tic
-load('./storage/EXPALLFixations.mat'); % EXPALLFixations
-load('./storage/EXPALLFeatures.mat'); % ALLFeatures
-load('./storage/EXPfaceFeatures.mat'); % faceFeatures
+load('../Output/storage/EXPALLFixations.mat'); % EXPALLFixations
+load('../Output/storage/EXPALLFeatures.mat'); % ALLFeatures
+load('../Output/storage/EXPfaceFeatures.mat'); % faceFeatures
 fprintf([num2str(toc), ' seconds \n']);
 
 opt = {};
@@ -56,23 +56,23 @@ info.opt_base = opt_base;
 %%EXP_ms6_201112290241_angle.mat
 % EXP1_REGION_ANGLE_ms6 = {};
 EXP1_REGION_NOANGLE_ms6 = {};
-for i = 0:9
+for i = 1:15
     opt = opt_base;
-    opt.n_region = 10-i;
+    opt.n_region = 10;
     %%EXP_ms6_201112290241_angle.mat
     % opt.enable_angle = 1;
     opt.enable_angle = 0;
     fprintf('========================================================= angle: %d region: %d\n', opt.enable_angle, opt.n_region);
     RET = {};
-    [RET.mInfo_tune, RET.mNSS_tune, RET.opt_ret] = calcMain(opt, EXPALLFixations, ALLFeatures, faceFeatures);
+    [RET.mInfo_tune, RET.mNSS_tune, RET.opt_ret] = calcIndiviDifference(opt, EXPALLFixations, ALLFeatures, faceFeatures, i);
     %%EXP_ms6_201112290241_angle.mat
     % EXP1_REGION_ANGLE_ms6{10-i} = RET;
-    EXP1_REGION_NOANGLE_ms6{10-i} = RET;
+    EXP1_REGION_NOANGLE_ms6{i} = RET;
     clear opt RET
 end
 
 info.end_time = datestr(now,'dd-mmm-yyyy HH:MM:SS')
-savefile = sprintf('./storage/EXP_ms6_%s.mat', info.time_stamp);
+savefile = sprintf('../Output/storage/individualTest01_%s.mat', info.time_stamp);
 %%EXP_ms6_201112290241_angle.mat
 % save(savefile,'EXP1_REGION_ANGLE_ms6','info','-v7.3');
 save(savefile,'EXP1_REGION_NOANGLE_ms6','info','-v7.3');

@@ -1,5 +1,5 @@
 % load('.\storage\exallfications.mat')
-stimfolder = 'C:\Users\yeb\Documents\MATLAB\final_resize';
+stimfolder = '../Resource/final_resize';
 files=dir(fullfile(stimfolder,'*.jpg'));
 [filenames{1:size(files,1)}] = files.name;
 

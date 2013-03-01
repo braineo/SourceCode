@@ -2,8 +2,8 @@
 
 
 %% Load mat files
-% load ('./storage/EXPALLFixations.mat');
-% load ('./storage/sevenFeatures.mat');
+% load ('../Output/storage/EXPALLFixations.mat');
+% load ('../Output/storage/sevenFeatures.mat');
 featContribution = zeros(1,size(avr_feature_map,2));
 %% define parameters
 origDims = [768,1366];

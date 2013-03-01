@@ -1,5 +1,5 @@
 %% smooth all pictures in a directry
-filefolder = './ramdampic';
+filefolder = '../Output/ramdampic';
 files=dir(fullfile(filefolder,'*.jpg'));
 [filenames{1:size(files,1)}] = files.name;
 cd ramdompics

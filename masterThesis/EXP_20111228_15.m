@@ -5,9 +5,9 @@ info.start_time = datestr(now,'dd-mmm-yyyy HH:MM:SS');
 
 % ----------------- TEMPLATE -----------------------------
 fprintf('Load EXPALLFixations, EXPALLFeatures...'); tic
-load('./storage/EXPALLFixations.mat'); % EXPALLFixations
-load('./storage/EXPALLFeatures.mat'); % ALLFeatures
-load('./storage/EXPfaceFeatures.mat'); % faceFeatures
+load('../Output/storage/EXPALLFixations.mat'); % EXPALLFixations
+load('../Output/storage/EXPALLFeatures.mat'); % ALLFeatures
+load('../Output/storage/EXPfaceFeatures.mat'); % faceFeatures
 fprintf([num2str(toc), ' seconds \n']);
 
 opt = {};
@@ -76,7 +76,7 @@ EXP1_REGION_NOANGLE_ms6 = {};
     clear opt RET
 
 info.end_time = datestr(now,'dd-mmm-yyyy HH:MM:SS')
-savefile = sprintf('./storage/EXP_ms6_%s.mat', info.time_stamp);
+savefile = sprintf('../Output/storage/EXP_ms6_%s.mat', info.time_stamp);
 save(savefile,'EXP1_REGION_ANGLE_ms6','EXP1_REGION_NOANGLE_ms6','info','-v7.3');
 
 % noangleÇÃÇ›é¿çsäÆóπ

@@ -9,7 +9,7 @@ for i = 1:100
         color = rand(1);
         rectangle('position',[x_position(1),y_position(1),y_position(2)*2,y_position(2)*2],'Curvature', [1 1],'faceColor',[rand(1) rand(1) rand(1)]);
     end
-    filename = sprintf('./ramdompics/%d.jpg', i);
+    filename = sprintf('../Output/ramdompics/%d.jpg', i);
     print('-djpeg', filename);
     close;
 end
