@@ -47,7 +47,7 @@ opt.posisize = 50000;
 opt.ngrate = 20;
 opt.n_trial = 10;
 opt.n_order_fromfirst = 1;
-opt.thresholdLengthType = 's_uni'; % 's_uni': sample?îàÍíË 'l_uni': ãÊä‘ÇÃí∑Ç≥àÍíË 'input': thresholdAngleÇ…?âä˙íl?›íË
+opt.thresholdLengthType = 's_uni'; % 's_uni': sample?îà‡•§í‡•ç 'l_uni': ã‡•åä‡§µÇ‡§Æí‡§ôÇ‡§ïà‡•§í‡•ç 'input': thresholdAngleÇ‡§´?âä‡•Øíl?‡•Åí‡•ç
 opt_base = opt;
 clear opt
 %% ----------------- SETTING -----------------------------
@@ -58,19 +58,21 @@ info.opt_base = opt_base;
 %%EXP_ms6_201112290241_angle.mat
 % EXP1_REGION_ANGLE_ms6 = {};
 EXP1_REGION_NOANGLE_ms6 = {};
-for i = 1:15
-    opt = opt_base;
-    opt.n_region = 10;
-    %%EXP_ms6_201112290241_angle.mat
-    % opt.enable_angle = 1;
-    opt.enable_angle = 0;
-    fprintf('========================================================= angle: %d region: %d\n', opt.enable_angle, opt.n_region);
-    RET = {};
-    [RET.mInfo_tune, RET.mNSS_tune, RET.opt_ret] = calcIndiviDifference(opt, EXPALLFixations, ALLFeatures, faceFeatures,i);
-    %%EXP_ms6_201112290241_angle.mat
-    % EXP1_REGION_ANGLE_ms6{10-i} = RET;
-    EXP1_REGION_NOANGLE_ms6{i} = RET;
-    clear opt RET
+for subjecti = 1:15
+    for regioni = 0:9
+        opt = opt_base;
+        opt.n_region = 10-regioni;
+        %%EXP_ms6_201112290241_angle.mat
+        % opt.enable_angle = 1;
+        opt.enable_angle = 1;
+        fprintf('========================================================= angle: %d region: %d\n', opt.enable_angle, opt.n_region);
+        RET = {};
+        [RET.mInfo_tune, RET.mNSS_tune, RET.opt_ret] = calcIndiviDifference(opt, EXPALLFixations, ALLFeatures, faceFeatures,subjecti);
+        %%EXP_ms6_201112290241_angle.mat
+        % EXP1_REGION_ANGLE_ms6{10-i} = RET;
+        EXP1_REGION_NOANGLE_ms6{subjecti}{regioni} = RET;
+        clear opt RET
+    end
 end
 
 info.end_time = datestr(now,'dd-mmm-yyyy HH:MM:SS')
