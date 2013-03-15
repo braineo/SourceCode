@@ -5,7 +5,7 @@
 
 %% Read picture library
 %
-stimfolder = '../Resource/final_resize';
+stimfolder = '../Resource/';
 % stimfolder = '../Resource/ramdompics';
 files=dir(fullfile(stimfolder,'*.jpg'));
 [filenames{1:size(files,1)}] = files.name;
@@ -77,5 +77,5 @@ for filenamei = 1: length(filenames)
     saltFeatureMaps{filenamei} = allmaps;
 end
 %%
-savefile = '../Output/storage/saltFeatureMaps.mat';
+savefile = '../Output/storage/testSaltFeatureMaps.mat';
 save(savefile, 'saltFeatureMaps','-v7.3');

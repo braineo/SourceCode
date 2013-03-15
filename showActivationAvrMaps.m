@@ -1,13 +1,13 @@
 %% This file is to show Activation maps
 
-load('../Output/storage/saltFeatureMaps.mat');
+% load('../Output/storage/saltFeatureMaps.mat');
 
 close all;
 dims = size(saltFeatureMaps{1}{1}.map);
 avrActFeatureMap = zeros(dims(1)*dims(2),...
                     length(saltFeatureMaps{1}));
 %% load and calculate average map
-for pic_sum = 172:172
+for pic_sum = 1:1
     i=0;
     actFeat = saltFeatureMaps{pic_sum};
     for fmapi = 1:length(actFeat)
