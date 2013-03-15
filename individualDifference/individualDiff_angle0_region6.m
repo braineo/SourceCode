@@ -1,4 +1,6 @@
 %% testing individual difference
+% Divide into 6 regions
+% Angle disabled
 
 clear all
 info = {};
@@ -45,7 +47,7 @@ clear opt
 opt = opt_base;
 opt.posisize = 50000;
 opt.ngrate = 20;
-opt.n_trial = 1;
+opt.n_trial = 30;
 opt.n_order_fromfirst = 1;
 opt.thresholdLengthType = 's_uni'; % 's_uni': sample?îà‡•§í‡•ç 'l_uni': ã‡•åä‡§µÇ‡§Æí‡§ôÇ‡§ïà‡•§í‡•ç 'input': thresholdAngleÇ‡§´?âä‡•Øíl?‡•Åí‡•ç
 opt_base = opt;
@@ -76,7 +78,7 @@ for subjecti = 1:15
 end
 
 info.end_time = datestr(now,'dd-mmm-yyyy HH:MM:SS')
-savefile = sprintf('../Output/storage/indiviTest01_%s.mat', info.time_stamp);
+savefile = sprintf('../Output/storage/individualDiff_angle0_region6_%s.mat', info.time_stamp);
 %%EXP_ms6_201112290241_angle.mat
 % save(savefile,'EXP1_REGION_ANGLE_ms6','info','-v7.3');
 save(savefile,'EXP1_REGION_NOANGLE_ms6','info','-v7.3');

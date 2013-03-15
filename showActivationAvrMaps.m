@@ -1,6 +1,6 @@
 %% This file is to show Activation maps
 
-%load('../Output/storage/saltFeatureMaps.mat');
+load('../Output/storage/saltFeatureMaps.mat');
 
 close all;
 dims = size(saltFeatureMaps{1}{1}.map);
@@ -24,17 +24,17 @@ figure
 for i = 1:6
     subplot(2, 3, i);
     imagesc(imresize(reshape(avrActFeatureMap(:,i), dim_avr),dim_show));
-    %title(featureNames(i),'FontSize', 28);
+    title(featureNames(i),'FontSize', 28);
 end
 figure
 for j= 1:3
     subplot(2,2,j);
     imagesc(imresize(reshape(avrActFeatureMap(:,i+j), dim_avr),dim_show));
-    %title(featureNames(i+j),'FontSize', 28);
+    title(featureNames(i+j),'FontSize', 28);
 end
 figure
 for k=1:12
     subplot(4,3,k);
     imagesc(imresize(reshape(avrActFeatureMap(:,i+j+k),dim_avr),dim_show));
-    %title(featureNames(i+j+k),'FontSize', 28);
+    title(featureNames(i+j+k),'FontSize', 28);
 end
