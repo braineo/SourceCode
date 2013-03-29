@@ -3,7 +3,7 @@
 
 close all;
 clear all;
-loadfile = '../Output/storage/individualDifference/indiviDiff_20130313_angle0_region6_trial30/individualDiff_angle0_region6_201303141930.mat';
+loadfile = '../Output/storage/individualDifference/indiviDiff_20130329_angle0_region6_trial50_tsample800/individualDiff_angle0_region6_201303290256.mat';
 load(loadfile);
 outputCSV = 0;
 

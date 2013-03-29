@@ -5,8 +5,7 @@ opt = opt_set;
 opt.start_time = datestr(now,'dd-mmm-yyyy HH:MM:SS');
 M = opt.M;
 N = opt.N;
-tool = toolFunc(opt);
-% toolFunc: return angel, distance and gauss
+tool = toolFunc(opt); % toolFunc: return angel, distance and gauss
 for order_fromfirst=1:opt.n_order_fromfirst
     [thresholdLength, thresholdAngle, n_samples_each_region] = getThresholdLength(order_fromfirst, EXPALLFixations, opt);
     opt.thresholdLength{order_fromfirst} = thresholdLength;

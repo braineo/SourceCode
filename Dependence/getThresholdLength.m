@@ -15,7 +15,7 @@ for imgidx=1:400
 
         for i=2:fix_length
             valid_flag = 1;
-% delete gaze points where are out of range, and whose distance is less than a mininum value      
+            %% delete gaze points where are out of range, and whose distance is less than a mininum value      
             if(EXPALLFixations{imgidx}{subidx}.medianXY(i, 1) < 0 || EXPALLFixations{imgidx}{subidx}.medianXY(i, 2) < 0 || ...
                EXPALLFixations{imgidx}{subidx}.medianXY(i, 1) >= opt.width || EXPALLFixations{imgidx}{subidx}.medianXY(i, 2) >= opt.height)
                 valid_flag = 0;
@@ -84,7 +84,7 @@ elseif (strcmp(opt.thresholdLengthType, 'input'))
 end
 
 if(set_flag==0)
-    %'l_uni' or 'input'でエラー
+    %'l_uni' or 'input'も､ｧエラー
     maxlength = dis_sort(end, 1);
     region_dif = maxlength/opt.n_region;
     region_base = 0;

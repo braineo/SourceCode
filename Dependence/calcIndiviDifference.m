@@ -21,20 +21,27 @@ for trial=1:opt.n_trial
 
     rand_param = sum(RandomSeed{trial});
     opt.rand_param{trial} = rand_param;
-    [sample_saccade, testingsamles] = getIndiTTsamples(rand_param, EXPALLFixations, opt, indiviNum);
-
+    if(~opt.fixedSampleNumber)
+        [sample_saccade, testingsamles] = getIndiTTsamples(rand_param, EXPALLFixations, opt, indiviNum);
+    else
+        [sample_saccade, testingsamles] = getIndiviSamples(EXPALLFixations, opt, indiviNum);
+    end
     fprintf('Creating infos_base...\n'); tic
     infos_base = zeros(M*N, 8);
     for tm=1:M
         for tn=1:N
-            infos_base(N*(tm-1)+tn, :) = [0 tn tm 0 0 0 0 0]; % imgidx X Y P(NEXT)までの距離 P(PREV)からの距離 区分番号 P(PREV)基準の角度 角度区分（左右:1,上:2,下:3）
+            infos_base(N*(tm-1)+tn, :) = [0 tn tm 0 0 0 0 0];
+            % imgidx,X,Y, distance to P(NEXT), distance to P(PREV),
+            % distinguish number,
+            % Angle(degree) based on P(PREV),
+            % Angle(index) (horizontal:1, up:2, down:3）
         end
     end
     ones_ = ones(size(infos_base, 1),1);
     fprintf([num2str(toc), ' seconds \n']);
 
     for order_fromfirst=1:opt.n_order_fromfirst
-        %order_fromfirst: 最初から何回目までのサッケードを考えるか
+        %order_fromfirst: take consider from the 1st to nth saccade
 
         rand('state',rand_param*trial*order_fromfirst);
 
@@ -230,5 +237,5 @@ end
 opt.end_time = datestr(now,'dd-mmm-yyyy HH:MM:SS');
 time_stamp = datestr(now,'yyyymmddHHMMSS');
 savefile = sprintf('../Output/storage/EXP_%s_angle%dregion%dTestSub%d_%s.mat', ...
-        opt.time_stamp, opt.enable_angle, opt.n_region, indiviNum, time_stamp);
+                   opt.time_stamp, opt.enable_angle, opt.n_region, indiviNum, time_stamp);
 save(savefile,'opt','mNSS_tune','mInfo_tune','mTraining','-v7.3');
