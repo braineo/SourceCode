@@ -51,7 +51,7 @@ for trial=1:opt.n_trial
 
         sample_order1 = sample_saccade(find(sample_saccade(:,2)<=order_fromfirst&sample_saccade(:,8)==1),:);
         sample_order1_perm = randperm(size(sample_order1, 1));
-        sample_order1 = sample_order1(sample_order1_perm, :);
+        sample_order1 = sample_order1(sample_order1_perm, :);% random reordered
 
         %---------------
 
