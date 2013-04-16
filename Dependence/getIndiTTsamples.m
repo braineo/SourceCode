@@ -1,4 +1,4 @@
-%% Gernerate learning and testing samples with random factor
+%% Gernerate learning and testing saccade samples with random factor
 function [sample_saccade, testingsamles] = getIndiTTsamples(rand_param, EXPALLFixations, opt, indiviNum, fortest)
 
 fprintf('Selecting training & testingsamles ...'); tic

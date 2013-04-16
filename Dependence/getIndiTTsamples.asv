@@ -1,8 +1,11 @@
-%% Gernerate learning and testing samples
-function [sample_saccade, testingsamles] = getIndiviSamples(EXPALLFixations, opt, indiviNum)
+%% Gernerate learning and testing saccade samples with random factor
+function [sample_saccade, testingsamles] = getIndiTTsamples(rand_param, EXPALLFixations, opt, indiviNum, fortest)
 
 fprintf('Selecting training & testingsamles ...'); tic
 
+%outputcsv = 'saccade.csv';
+%fid = fopen(outputcsv, 'w');
+rand('state',rand_param);%set random generator to nth state
 sample_saccade = zeros(100000,8);
 testingsamles = {};
 c_sample_saccade=0;
@@ -15,8 +18,12 @@ for imgidx=1:400
 
     training_flag = 0;
 
-    if(c_sample_saccade < opt.sampleNumber && rand>.5)
+    if(rand >.5)
         training_flag = 1;
+    end
+
+    if((nargin >= 5)&(fortest == 1))
+        training_flag = 0;
     end
 
     testing = {};
@@ -36,11 +43,11 @@ for imgidx=1:400
         t_ny = EXPALLFixations{imgidx}{subidx}.medianXY(i, 2)/opt.minimize_scale;
         t_dis = norm([t_px-t_nx t_py-t_ny]);
 
-        if((opt.discard_short_saccade > 0) && (t_dis < opt.discard_short_saccade))
+        if((opt.discard_short_saccade > 0) & (t_dis < opt.discard_short_saccade))
             valid_flag = 0;
         end
 
-        if(training_flag)
+        if(training_flag == 1)
             c_sample_saccade = c_sample_saccade + 1;
             sample_saccade(c_sample_saccade,:) = [imgidx i-1 t_px t_py t_nx t_ny t_dis valid_flag];
         end
