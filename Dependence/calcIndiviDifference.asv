@@ -145,12 +145,14 @@ for trial=1:opt.n_trial
 
                 t_infomat_near_sel = t_infomat_near_sel(1:round(size(t_infomat_near,1)/rate)); %adjust positive sample to 
                 t_infomat_far_sel = t_infomat_far_sel(1:size(t_infomat_near_sel,2)*opt.ngrate);
-
+%% Positive samples
+region_stat_near = zeros(opt.nregions,1);
                 for j=1:size(t_infomat_near_sel,2)
                     ji=t_infomat_near_sel(j);
                     c_near = c_near+1;
                     item = t_infomat_near(ji,:)';
                     region_idx = item(6);
+                    
                     angle_idx = item(8);
                     infomat_near_distance(c_near, 1) = item(4);
                     item_main = [c1(item(3),item(2)) c2(item(3),item(2)) c3(item(3),item(2))...
@@ -164,7 +166,7 @@ for trial=1:opt.n_trial
                     end
                     clear item item_main
                 end
-
+%% Negative samples
                 for j=1:size(t_infomat_far_sel,2)
                     ji=t_infomat_far_sel(j);
                     c_far = c_far + 1;

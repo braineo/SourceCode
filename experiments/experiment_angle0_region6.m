@@ -50,7 +50,7 @@ opt.posisize = 50000;
 opt.ngrate = 20;
 opt.n_trial = 80;
 opt.n_order_fromfirst = 1;
-opt.thresholdLengthType = 's_uni'; % 's_uni': sample?îà‡•§í‡•?'l_uni': ã‡•åä‡§µÇ‡§Æí‡§ôÇ‡§ïà‡•§í‡•?'input': thresholdAngleÇ‡§´?âä‡•Øíl?‡•Åí‡•?
+opt.thresholdLengthType = 's_uni'; % 's_uni': sample?îà‡•§í‡•?'l_uni': ã‡•åä‡§µÇ‡§Æí‡§ôÇ‡§ïà‡•§í‡•?'input': thresholdAngleÇ‡§´?âä‡•Øíl?‡•?í‡•?
 opt_base = opt;
 clear opt
 %% ----------------- SETTING -----------------------------
@@ -58,14 +58,14 @@ clear opt
 info.opt_base = opt_base;
 
 for subjecti = 1:15
-    for regioni = 4:4
+    for regioni = 6:6
     opt = opt_base;
-    opt.n_region = i;
+    opt.n_region = regioni;
     opt.enable_angle = 0;
     fprintf('========================================================= angle: %d region: %d\n', opt.enable_angle, opt.n_region);
     RET = {};
-    [RET.mInfo_tune, RET.mNSS_tune, RET.opt_ret] = calcIndiviDifference(opt, EXPALLFixations, ALLFeatures, faceFeatures,subjecti);
-    EXP_INDV_REGION_NOANGLE_ms6{i} = RET;
+    [RET.mInfo_tune, RET.mNSS_tune, RET.opt_ret] = calcMainPerSubject(opt, EXPALLFixations, ALLFeatures, faceFeatures,subjecti);
+    EXP_INDV_REGION_NOANGLE_ms6{subjecti}{regioni} = RET;
     clear opt RET
     end
 end

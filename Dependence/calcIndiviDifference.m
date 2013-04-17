@@ -16,7 +16,8 @@ for order_fromfirst=1:opt.n_order_fromfirst
 end
 
 for trial=1:opt.n_trial
-
+    region_stat_near = zeros(1,opt.n_region);
+    region_stat_far = zeros(1,opt.n_region);
     fprintf('XXXXXXXXXXXXXXX trial: %d\n', trial);
 
     rand_param = sum(RandomSeed{trial});
@@ -29,10 +30,10 @@ for trial=1:opt.n_trial
     for tm=1:M
         for tn=1:N
             infos_base(N*(tm-1)+tn, :) = [0 tn tm 0 0 0 0 0];
-            % imgidx,X,Y, distance to P(NEXT), distance to P(PREV),
-            % distinguish number,
-            % Angle(degree) based on P(PREV),
-            % Angle(index) (horizontal:1, up:2, down:3Åj
+            % 1. imgidx, 2.X, 3. Y, 4. distance to P(NEXT), 5. distance to P(PREV),
+            % 6. Region number,
+            % 7. Angle(degree) based on P(PREV),
+            % 8. Angle(index) (horizontal:1, up:2, down:3Åj
         end
     end
     ones_ = ones(size(infos_base, 1),1);
@@ -145,12 +146,14 @@ for trial=1:opt.n_trial
 
                 t_infomat_near_sel = t_infomat_near_sel(1:round(size(t_infomat_near,1)/rate)); %adjust positive sample to 
                 t_infomat_far_sel = t_infomat_far_sel(1:size(t_infomat_near_sel,2)*opt.ngrate);
+%% Positive samples
 
                 for j=1:size(t_infomat_near_sel,2)
                     ji=t_infomat_near_sel(j);
                     c_near = c_near+1;
                     item = t_infomat_near(ji,:)';
                     region_idx = item(6);
+                    region_stat_near(1,region_idx) = region_stat_near(1,region_idx)+1;
                     angle_idx = item(8);
                     infomat_near_distance(c_near, 1) = item(4);
                     item_main = [c1(item(3),item(2)) c2(item(3),item(2)) c3(item(3),item(2))...
@@ -164,12 +167,14 @@ for trial=1:opt.n_trial
                     end
                     clear item item_main
                 end
+%% Negative samples
 
                 for j=1:size(t_infomat_far_sel,2)
                     ji=t_infomat_far_sel(j);
                     c_far = c_far + 1;
                     item = t_infomat_far(ji,:)';
                     region_idx = item(6);
+                    region_stat_far(region_idx) = region_stat_far(region_idx)+1;
                     angle_idx = item(8);
                     item_main = [c1(item(3),item(2)) c2(item(3),item(2)) c3(item(3),item(2))...
                                  i1(item(3),item(2)) i2(item(3),item(2)) i3(item(3),item(2))...
