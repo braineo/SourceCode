@@ -15,11 +15,11 @@ for subjecti = 1:15
     n_region = 6;
     fprintf(fid, 'n_region,%d\n', n_region);
 
-    vals_tune = zeros(info.opt_base.n_trial, size(EXP1_REGION_NOANGLE_ms6{1}{regioni}.mInfo_tune{1}{1}.weight,1));
+    vals_tune = zeros(info.opt_base.n_trial, size(EXP_INDV_REGION_NOANGLE_ms6{1}{regioni}.mInfo_tune{1}{1}.weight,1));
     for n_order_fromfirst = 1:n_order_fromfirst_up
         n_trial = info.opt_base.n_trial;
         for trial = 1:n_trial
-            vals_tune(trial,:) = EXP1_REGION_NOANGLE_ms6{subjecti}{regioni}.mInfo_tune{trial}{n_order_fromfirst}.weight';
+            vals_tune(trial,:) = EXP_INDV_REGION_NOANGLE_ms6{subjecti}{regioni}.mInfo_tune{trial}{n_order_fromfirst}.weight';
         end
     end
     
@@ -48,12 +48,12 @@ for outputi = 1:2
         fprintf(fid, 'std\n');
     end
 
-    vals_tune = zeros(15*info.opt_base.n_trial,size(EXP1_REGION_NOANGLE_ms6{1}{regioni}.mInfo_tune{1}{1}.weight,1));
+    vals_tune = zeros(15*info.opt_base.n_trial,size(EXP_INDV_REGION_NOANGLE_ms6{1}{regioni}.mInfo_tune{1}{1}.weight,1));
     for subjecti = 1:15
         for n_order_fromfirst=1:n_order_fromfirst_up
             n_trial = info.opt_base.n_trial;
             for trial=1:n_trial
-                vals_tune((subjecti-1)*n_trial+trial,:) = EXP1_REGION_NOANGLE_ms6{subjecti}{regioni}.mInfo_tune{trial}{n_order_fromfirst}.weight';
+                vals_tune((subjecti-1)*n_trial+trial,:) = EXP_INDV_REGION_NOANGLE_ms6{subjecti}{regioni}.mInfo_tune{trial}{n_order_fromfirst}.weight';
             end
         end
     end

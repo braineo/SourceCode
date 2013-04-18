@@ -48,7 +48,7 @@ clear opt
 opt = opt_base;
 opt.posisize = 50000;
 opt.ngrate = 20;
-opt.n_trial = 80;
+opt.n_trial = 20;
 opt.n_order_fromfirst = 1;
 opt.thresholdLengthType = 's_uni'; % 's_uni': sample?”ˆà¥¤’à¥?'l_uni': ‹à¥ŒŠà¤µ‚à¤®’à¤™‚à¤•ˆà¥¤’à¥?'input': thresholdAngle‚à¤«?‰Šà¥¯’l?à¥?’à¥?
 opt_base = opt;
