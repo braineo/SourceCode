@@ -51,20 +51,21 @@ opt.ngrate = 20;
 opt.n_trial = 20;
 opt.n_order_fromfirst = 1;
 opt.thresholdLengthType = 's_uni'; % 's_uni': sample?”ˆà¥¤’à¥?'l_uni': ‹à¥ŒŠà¤µ‚à¤®’à¤™‚à¤•ˆà¥¤’à¥?'input': thresholdAngle‚à¤«?‰Šà¥¯’l?à¥?’à¥?
+opt.allAreTrainingSample = 1; %take all saccades to generate training samlple
 opt_base = opt;
 clear opt
 %% ----------------- SETTING -----------------------------
 
 info.opt_base = opt_base;
 
-for subjecti = 1:15
+for subjecti = 1:1
     for regioni = 6:6
     opt = opt_base;
     opt.n_region = regioni;
     opt.enable_angle = 0;
     fprintf('========================================================= angle: %d region: %d\n', opt.enable_angle, opt.n_region);
     RET = {};
-    [RET.mInfo_tune, RET.mNSS_tune, RET.opt_ret] = calcMainPerSubject(opt, EXPALLFixations, ALLFeatures, faceFeatures,subjecti);
+    [RET.mInfo_tune, RET.mNSS_tune, RET.opt_ret] = calcMainPerSubject20130425(opt, EXPALLFixations, ALLFeatures, faceFeatures,subjecti);
     EXP_INDV_REGION_NOANGLE_ms6{subjecti}{regioni} = RET;
     clear opt RET
     end

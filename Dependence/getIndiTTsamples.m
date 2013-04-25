@@ -17,8 +17,11 @@ for imgidx=1:400
     end
 
     training_flag = 0;
-
-    if(rand >.5)
+    if (~opt.allAreTrainingSample)
+        if(rand >.5)
+            training_flag = 1;
+        end
+    else
         training_flag = 1;
     end
 

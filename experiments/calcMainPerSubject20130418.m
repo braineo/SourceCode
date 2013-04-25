@@ -163,7 +163,7 @@ for trial=1:opt.n_trial %times of experienment
                 singleSample = infomatNear(i,:);
                 countNearAll = countNearAll + 1;
                 angleIndex = singleSample(8);
-                regioni = singleSample(6)
+                regioni = singleSample(6);
                 singleFeature = [c1(singleSample(3),singleSample(2)) c2(singleSample(3),singleSample(2)) c3(singleSample(3),singleSample(2))...
                                  i1(singleSample(3),singleSample(2)) i2(singleSample(3),singleSample(2)) i3(singleSample(3),singleSample(2))...
                                  o1(singleSample(3),singleSample(2)) o2(singleSample(3),singleSample(2)) o3(singleSample(3),singleSample(2)) face(singleSample(3),singleSample(2))];
@@ -180,6 +180,7 @@ for trial=1:opt.n_trial %times of experienment
                 singleSample = infomatFar(i,:);
                 countFarAll = countFarAll + 1;
                 angleIndex = singleSample(8);
+                regioni = singleSample(6);
                 singleFeature = [c1(singleSample(3),singleSample(2)) c2(singleSample(3),singleSample(2)) c3(singleSample(3),singleSample(2))...
                                  i1(singleSample(3),singleSample(2)) i2(singleSample(3),singleSample(2)) i3(singleSample(3),singleSample(2))...
                                  o1(singleSample(3),singleSample(2)) o2(singleSample(3),singleSample(2)) o3(singleSample(3),singleSample(2)) face(singleSample(3),singleSample(2))];
@@ -219,7 +220,7 @@ for trial=1:opt.n_trial %times of experienment
         %% select negative samples
         indexShift = 0;
         for regioni = 1:opt.n_region
-            samplei = sampleIndexNear{regioni}(1:minSizeFar)+indexShift;
+            samplei = sampleIndexFar{regioni}(1:minSizeFar)+indexShift;
             featureMatFar = [featureMatFar ; featurePixelValueFar(samplei,:)];
             indexShift = indexShift + sampleSizeFar(regioni);
         end
