@@ -1,7 +1,6 @@
-%% testing individual difference
+%% all sample for training
 % Divide into 6 regions
 % Angle disabled
-% Fixed pixel sample in each region
 
 clear all
 info = {};
@@ -50,7 +49,7 @@ opt.posisize = 50000;
 opt.ngrate = 20;
 opt.n_trial = 20;
 opt.n_order_fromfirst = 1;
-opt.thresholdLengthType = 's_uni'; % 's_uni': sample?”ˆà¥¤’à¥?'l_uni': ‹à¥ŒŠà¤µ‚à¤®’à¤™‚à¤•ˆà¥¤’à¥?'input': thresholdAngle‚à¤«?‰Šà¥¯’l?à¥?’à¥?
+opt.thresholdLengthType = 's_uni'; %
 opt.allAreTrainingSample = 1; %take all saccades to generate training samlple
 opt_base = opt;
 clear opt
@@ -58,19 +57,19 @@ clear opt
 
 info.opt_base = opt_base;
 
-for subjecti = 1:1
+
     for regioni = 6:6
     opt = opt_base;
     opt.n_region = regioni;
     opt.enable_angle = 0;
     fprintf('========================================================= angle: %d region: %d\n', opt.enable_angle, opt.n_region);
     RET = {};
-    [RET.mInfo_tune, RET.mNSS_tune, RET.opt_ret] = calcMainPerSubject20130425(opt, EXPALLFixations, ALLFeatures, faceFeatures,subjecti);
-    EXP_INDV_REGION_NOANGLE_ms6{subjecti}{regioni} = RET;
+    [RET.mInfo_tune, RET.mNSS_tune, RET.opt_ret] = calcMainAllSubject20130430(opt, EXPALLFixations, ALLFeatures, faceFeatures);
+    EXP_INDV_REGION_NOANGLE_ms6{regioni} = RET;
     clear opt RET
     end
-end
+
 
 info.end_time = datestr(now,'dd-mmm-yyyy HH:MM:SS')
-savefile = sprintf('../Output/storage/EXP_INDV_angle0_region6_%s.mat', info.time_stamp);
+savefile = sprintf('../Output/storage/EXP20130430_angle0_region6_%s.mat', info.time_stamp);
 save(savefile,'EXP_INDV_REGION_NOANGLE_ms6','info','-v7.3');

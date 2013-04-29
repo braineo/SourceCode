@@ -1,4 +1,4 @@
-%% Main function of the project, calculating the weights for each subject
+%% Main function of the project, calculating the weights
 % return the result of training and NSS score for a single test subject
 % parameter:
 % opt_set: Setting up options
@@ -8,7 +8,7 @@
 % subjectIndex: ID of test subject
 
 % no random selection, use all saccades and all samples, no trail loop
-function  [mInfo_tune, mNSS_tune, opt] = calcMainPerSubject20130425(opt_set, saccadeData, featureGBVS, faceFeatures, subjectIndex)
+function  [mInfo_tune, mNSS_tune, opt] = calcMainAllSubject20130430(opt_set, saccadeData, featureGBVS, faceFeatures)
 
 load RandomSeed_20121220
 opt = opt_set;
@@ -33,7 +33,7 @@ end
     end
     
     rand_param = 0;   
-    [sample_saccade, testingsamles] = getIndiTTsamples(rand_param, saccadeData, opt, subjectIndex);
+    [sample_saccade, testingsamles] = getTTsamples(rand_param, saccadeData, opt);
     
     fprintf('Creating infos_base...\n'); tic
     infos_base = zeros(M*N, 8);
@@ -49,8 +49,7 @@ end
     
     allOnesMat = ones(size(infos_base, 1),1);
     fprintf([num2str(toc), ' seconds \n']);
-    infomatNear = [];
-    infomatFar =[];
+    
      for order_fromfirst=1:opt.n_order_fromfirst %order_fromfirst: take consider from the 1st to nth saccade
 
         fprintf('---------------- order_fromfirst: %d\n', order_fromfirst);
@@ -85,7 +84,8 @@ end
         rate
 
         fprintf('Prepare Training...\n'); tic
-        
+        infomatNear=[];
+        infomatFar=[];
         for imgidx=1:400
             if(mod(imgidx,10)==0)
                 fprintf('%d, ', imgidx);
@@ -197,8 +197,7 @@ end
             sampleSizeFar(k)= size(infomatRegionedFar{k},1);
         end
 
-        featureMatNear = [];
-        featureMatFar = [];
+        
         indexShift = 0;
         countNear = sum(sampleSizeNear);
         countFar = sum(sampleSizeFar);
@@ -232,13 +231,14 @@ end
             order_fromfirst_ = order_fromfirst;
         end
         
+        NSS_tune = testSaliencymap(opt, featureGBVS, faceFeatures, thresholdLength, info_tune.weight, testingsamles, order_fromfirst_);
         mInfo_tune{order_fromfirst} = info_tune;
-
+        mNSS_tune{order_fromfirst} = NSS_tune;
         clear info_tune
      end
-     mNSS_tune={};
-opt.end_time = datestr(now,'dd-mmm-yyyy HH:MM:SS');
-time_stamp = datestr(now,'yyyymmddHHMMSS');
-savefile = sprintf('../Output/storage/EXP_%s_angle%dregion%dTestSub%d_%s.mat', ...
-                   opt.time_stamp, opt.enable_angle, opt.n_region, subjectIndex, time_stamp);
-save(savefile,'opt','mInfo_tune','-v7.3');
+
+% opt.end_time = datestr(now,'dd-mmm-yyyy HH:MM:SS');
+% time_stamp = datestr(now,'yyyymmddHHMMSS');
+% savefile = sprintf('../Output/storage/EXP_%s_angle%dregion%dTestSub%d_%s.mat', ...
+%                    opt.time_stamp, opt.enable_angle, opt.n_region, subjectIndex, time_stamp);
+% save(savefile,'opt','mInfo_tune','-v7.3');
