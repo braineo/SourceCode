@@ -25,218 +25,218 @@ for order_fromfirst=1:opt.n_order_fromfirst % to nth saccade
     clear thresholdLength thresholdAngle n_samples_each_region
 end
 
-    infomatRegionedNear = {};
-    infomatRegionedFar = {};
-    for k=1:opt.n_region
-        infomatRegionedNear{k}=[];
-        infomatRegionedFar{k}=[];
+infomatRegionedNear = {};
+infomatRegionedFar = {};
+for k=1:opt.n_region
+    infomatRegionedNear{k}=[];
+    infomatRegionedFar{k}=[];
+end
+
+rand_param = 0;   
+[sample_saccade, testingsamles] = getIndiTTsamples(rand_param, saccadeData, opt, subjectIndex);
+
+fprintf('Creating infos_base...\n'); tic
+infos_base = zeros(M*N, 8);
+for tm=1:M
+    for tn=1:N
+        infos_base(N*(tm-1)+tn, :) = [0 tn tm 0 0 0 0 0];
+        % 1. imgidx, 2.X, 3. Y, 4. distance to P(NEXT), 5. distance to P(PREV),
+        % 6. Region number,
+        % 7. Angle(degree) based on P(PREV),
+        % 8. Angle(index) (horizontal:1, up:2, down:3)
+    end
+end
+
+allOnesMat = ones(size(infos_base, 1),1);
+fprintf([num2str(toc), ' seconds \n']);
+
+for order_fromfirst=1:opt.n_order_fromfirst %order_fromfirst: take consider from the 1st to nth saccade
+
+    fprintf('---------------- order_fromfirst: %d\n', order_fromfirst);
+
+    thresholdLength = opt.thresholdLength{order_fromfirst};
+
+    sampleSaccadeOrderSelected = sample_saccade(find(sample_saccade(:,2)<=order_fromfirst&sample_saccade(:,8)==1),:);
+    sample_order1_perm = randperm(size(sampleSaccadeOrderSelected, 1));
+    sampleSaccadeOrderSelected = sampleSaccadeOrderSelected(sample_order1_perm, :);% random reordered
+    
+    %---------------
+    
+    countNearAll = 0;
+    countFarAll = 0;
+    
+    num_feat_A = 10; %total number of features
+    infomat_near_distance = zeros(opt.posisize*1.1,1);
+    if(opt.enable_angle)
+        featurePixelValueNear = zeros(opt.posisize*1.1,3*num_feat_A*size(thresholdLength,2)); % 3 directions, 10 features, n regions
+        featurePixelValueFar = zeros(opt.posisize*opt.ngrate*1.1,3*num_feat_A*size(thresholdLength,2));
+    else
+        featurePixelValueNear = zeros(opt.posisize*1.1,num_feat_A*size(thresholdLength,2));
+        featurePixelValueFar = zeros(opt.posisize*opt.ngrate*1.1,num_feat_A*size(thresholdLength,2));
+    end
+
+    rate = 1;
+    positiveSamples = tool.get_distance(1)*tool.get_distance(1)*1.05*pi*size(sampleSaccadeOrderSelected, 1);
+    if(positiveSamples > opt.posisize)
+        rate = positiveSamples/opt.posisize;
     end
     
-    rand_param = 0;   
-    [sample_saccade, testingsamles] = getIndiTTsamples(rand_param, saccadeData, opt, subjectIndex);
-    
-    fprintf('Creating infos_base...\n'); tic
-    infos_base = zeros(M*N, 8);
-    for tm=1:M
-        for tn=1:N
-            infos_base(N*(tm-1)+tn, :) = [0 tn tm 0 0 0 0 0];
-            % 1. imgidx, 2.X, 3. Y, 4. distance to P(NEXT), 5. distance to P(PREV),
+    rate
+
+    fprintf('Prepare Training data...\n'); tic
+    infomatNear = [];
+    infomatFar =[];
+    for imgidx=1:400
+        if(mod(imgidx,10)==0)
+            fprintf('%d, ', imgidx);
+        end
+        if(mod(imgidx,100)==0)
+            fprintf('\n');
+        end
+        sampleIndexSelected = sampleSaccadeOrderSelected(find(sampleSaccadeOrderSelected(:,1)==imgidx),:);
+        if(size(sampleIndexSelected, 1)==0)
+            clear sampleIndexSelected
+            continue
+        end
+        % resize feature maps
+        c1 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{1}{1}, [M N], 'bilinear');
+        c2 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{1}{2}, [M N], 'bilinear');
+        c3 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{1}{3}, [M N], 'bilinear');
+        i1 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{2}{1}, [M N], 'bilinear');
+        i2 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{2}{2}, [M N], 'bilinear');
+        i3 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{2}{3}, [M N], 'bilinear');
+        o1 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{3}{1}, [M N], 'bilinear');
+        o2 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{3}{2}, [M N], 'bilinear');
+        o3 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{3}{3}, [M N], 'bilinear');
+
+        color = imresize(featureGBVS{imgidx}.graphbase.top_level_feat_maps{1}, [M N], 'bilinear');
+        intensity = imresize(featureGBVS{imgidx}.graphbase.top_level_feat_maps{2}, [M N], 'bilinear');
+        orientation = imresize(featureGBVS{imgidx}.graphbase.top_level_feat_maps{3}, [M N], 'bilinear');
+        face = imresize(faceFeatures{imgidx}, [M N], 'bilinear');
+        
+        for i=1:size(sampleIndexSelected,1)
+            %% Fill in infomat
+            infomat = infos_base;
+            infomat(:,1) = imgidx;
+            t_px = sampleIndexSelected(i, 3);
+            t_py = sampleIndexSelected(i, 4);
+            t_nx = sampleIndexSelected(i, 5);
+            t_ny = sampleIndexSelected(i, 6);
+            % 1. imgidx, 2.X, 3. Y, 
+            % 4. distance to P(NEXT), 5. distance to P(PREV),
             % 6. Region number,
             % 7. Angle(degree) based on P(PREV),
             % 8. Angle(index) (horizontal:1, up:2, down:3)
+            infomat(:,4) = ...
+                sqrt(((t_nx+0.5).*allOnesMat-infomat(:,2)).*((t_nx+0.5).*allOnesMat-infomat(:,2))+...
+                     ((t_ny+0.5).*allOnesMat-infomat(:,3)).*((t_ny+0.5).*allOnesMat-infomat(:,3)));
+            infomat(:,5) = ...
+                sqrt(((t_px+0.5).*allOnesMat-infomat(:,2)).*((t_px+0.5).*allOnesMat-infomat(:,2))+...
+                     ((t_py+0.5).*allOnesMat-infomat(:,3)).*((t_py+0.5).*allOnesMat-infomat(:,3)));
+
+            for k=1:size(thresholdLength,2)
+                infomat(find(infomat(:,5)<thresholdLength(1,k)&infomat(:,6)==0),6) = k;
+            end
+
+            if(opt.enable_angle)
+                infomat(:,7) = ...
+                    atan2(-(infomat(:,3)-(t_py+0.5).*ones_), abs(infomat(:,2)-(t_px+0.5).*ones_));
+
+                infomat(find(infomat(:,7)>-pi/4&infomat(:,7)<pi/4),8) = 1; %direction: horizontal
+                infomat(find(infomat(:,7)>=pi/4),8) = 2; %direction: up
+                infomat(find(infomat(:,7)<=-pi/4),8) = 3; %direction: down
+            end
+            infomatNear = [infomatNear ;  infomat(find(infomat(:,4)<opt.th_near & infomat(:,6)~=0),:)];
+            infomatFar = [infomatFar ;  infomat(find(infomat(:,4)>opt.th_far & infomat(:,6)~=0),:)];
+            for k=1:size(thresholdLength,2)%%%%bug
+                infomatRegionedNear{k} = [infomatRegionedNear{k}; infomat(find(infomat(:,4)<opt.th_near & infomat(:,6) == k),:)];
+                infomatRegionedFar{k} = [infomatRegionedNear{k}; infomat(find(infomat(:,4)>opt.th_far & infomat(:,6) == k),:)];
+            end
         end
+        %% all positive samples
+        for i = find(infomatNear(:,1) == imgidx)'
+            singleSample = infomatNear(i,:);
+            countNearAll = countNearAll + 1;
+            angleIndex = singleSample(8);
+            regioni = singleSample(6);
+            singleFeature = [c1(singleSample(3),singleSample(2)) c2(singleSample(3),singleSample(2)) c3(singleSample(3),singleSample(2))...
+                             i1(singleSample(3),singleSample(2)) i2(singleSample(3),singleSample(2)) i3(singleSample(3),singleSample(2))...
+                             o1(singleSample(3),singleSample(2)) o2(singleSample(3),singleSample(2)) o3(singleSample(3),singleSample(2)) face(singleSample(3),singleSample(2))];
+            if(opt.enable_angle)
+                featurePixelValueNear(countNearAll,num_feat_A*3*(regioni-1)+(angleIndex-1)*num_feat_A+1:num_feat_A*3*(regioni-1)+angleIndex*num_feat_A)=singleFeature(:);
+            else
+                featurePixelValueNear(countNearAll,num_feat_A*(regioni-1)+1:num_feat_A*regioni)=singleFeature(:);
+            end
+            
+        end
+        %% all negative samples
+        
+        for i = find(infomatFar(:,1) == imgidx)'
+            singleSample = infomatFar(i,:);
+            countFarAll = countFarAll + 1;
+            angleIndex = singleSample(8);
+            regioni = singleSample(6);
+            singleFeature = [c1(singleSample(3),singleSample(2)) c2(singleSample(3),singleSample(2)) c3(singleSample(3),singleSample(2))...
+                             i1(singleSample(3),singleSample(2)) i2(singleSample(3),singleSample(2)) i3(singleSample(3),singleSample(2))...
+                             o1(singleSample(3),singleSample(2)) o2(singleSample(3),singleSample(2)) o3(singleSample(3),singleSample(2)) face(singleSample(3),singleSample(2))];
+            if(opt.enable_angle)
+                featurePixelValueFar(countFarAll,num_feat_A*3*(regioni-1)+(angleIndex-1)*num_feat_A+1:num_feat_A*3*(regioni-1)+angleIndex*num_feat_A)=singleFeature(:);
+            else
+                featurePixelValueFar(countFarAll,num_feat_A*(regioni-1)+1:num_feat_A*regioni)=singleFeature(:);
+            end
+        end
+        
+    end
+    %% Now we have all Far and Near pixel samples and going to pick part of them
+    sampleSizeNear = zeros(1,opt.n_region);
+    sampleSizeFar = zeros(1,opt.n_region);
+    sampleIndexNear = {};
+    sampleIndexFar = {};
+    for k = 1:opt.n_region
+        sampleSizeNear(k)= size(infomatRegionedNear{k},1);
+        sampleSizeFar(k)= size(infomatRegionedFar{k},1);
+    end
+
+    featureMatNear = [];
+    featureMatFar = [];
+    indexShift = 0;
+    countNear = sum(sampleSizeNear);
+    countFar = sum(sampleSizeFar);
+    %% select positive samples
+    
+    featureMatNear = featurePixelValueNear(1:countNear,:);
+    
+    %% select negative samples
+    
+    featureMatFar = featurePixelValueFar(1:countFar,:);
+    
+    %% Finishing selecting samples, start to train
+    fprintf([num2str(toc), ' seconds \n']); 
+    featureMat = [featureMatNear; featureMatFar];
+    
+    labelMat = [ones(countNear, 1); zeros(countFar, 1)];
+    
+    fprintf('Training...\n'); tic
+    info_tune = {};
+
+    fprintf('|tune|');
+    [m_,n_] = size(featureMat);
+    [info_tune.weight,info_tune.resnorm,info_tune.residual,info_tune.exitflag,info_tune.output,info_tune.lambda]  =  lsqlin(featureMat, labelMat,-eye(n_,n_),zeros(n_,1));
+    fprintf([num2str(toc), ' seconds \n']);
+
+    clear featureMat labelMat
+
+    if(order_fromfirst == 5) %% WTF?!?!
+        order_fromfirst_ = 0;
+    else
+        order_fromfirst_ = order_fromfirst;
     end
     
-    allOnesMat = ones(size(infos_base, 1),1);
-    fprintf([num2str(toc), ' seconds \n']);
-    infomatNear = [];
-    infomatFar =[];
-     for order_fromfirst=1:opt.n_order_fromfirst %order_fromfirst: take consider from the 1st to nth saccade
+    mInfo_tune{order_fromfirst} = info_tune;
 
-        fprintf('---------------- order_fromfirst: %d\n', order_fromfirst);
-
-        thresholdLength = opt.thresholdLength{order_fromfirst};
-
-        sampleSaccadeOrderSelected = sample_saccade(find(sample_saccade(:,2)<=order_fromfirst&sample_saccade(:,8)==1),:);
-        sample_order1_perm = randperm(size(sampleSaccadeOrderSelected, 1));
-        sampleSaccadeOrderSelected = sampleSaccadeOrderSelected(sample_order1_perm, :);% random reordered
-        
-        %---------------
-        
-        countNearAll = 0;
-        countFarAll = 0;
-        
-        num_feat_A = 10; %total number of features
-        infomat_near_distance = zeros(opt.posisize*1.1,1);
-        if(opt.enable_angle)
-            featurePixelValueNear = zeros(opt.posisize*1.1,3*num_feat_A*size(thresholdLength,2)); % 3 directions, 10 features, n regions
-            featurePixelValueFar = zeros(opt.posisize*opt.ngrate*1.1,3*num_feat_A*size(thresholdLength,2));
-        else
-            featurePixelValueNear = zeros(opt.posisize*1.1,num_feat_A*size(thresholdLength,2));
-            featurePixelValueFar = zeros(opt.posisize*opt.ngrate*1.1,num_feat_A*size(thresholdLength,2));
-        end
-
-        rate = 1;
-        positiveSamples = tool.get_distance(1)*tool.get_distance(1)*1.05*pi*size(sampleSaccadeOrderSelected, 1);
-        if(positiveSamples > opt.posisize)
-            rate = positiveSamples/opt.posisize;
-        end
-        
-        rate
-
-        fprintf('Prepare Training...\n'); tic
-        
-        for imgidx=1:400
-            if(mod(imgidx,10)==0)
-                fprintf('%d, ', imgidx);
-            end
-            if(mod(imgidx,100)==0)
-                fprintf('\n');
-            end
-            sampleIndexSelected = sampleSaccadeOrderSelected(find(sampleSaccadeOrderSelected(:,1)==imgidx),:);
-            if(size(sampleIndexSelected, 1)==0)
-                clear sampleIndexSelected
-                continue
-            end
-% resize feature maps
-            c1 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{1}{1}, [M N], 'bilinear');
-            c2 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{1}{2}, [M N], 'bilinear');
-            c3 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{1}{3}, [M N], 'bilinear');
-            i1 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{2}{1}, [M N], 'bilinear');
-            i2 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{2}{2}, [M N], 'bilinear');
-            i3 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{2}{3}, [M N], 'bilinear');
-            o1 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{3}{1}, [M N], 'bilinear');
-            o2 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{3}{2}, [M N], 'bilinear');
-            o3 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{3}{3}, [M N], 'bilinear');
-
-            color = imresize(featureGBVS{imgidx}.graphbase.top_level_feat_maps{1}, [M N], 'bilinear');
-            intensity = imresize(featureGBVS{imgidx}.graphbase.top_level_feat_maps{2}, [M N], 'bilinear');
-            orientation = imresize(featureGBVS{imgidx}.graphbase.top_level_feat_maps{3}, [M N], 'bilinear');
-            face = imresize(faceFeatures{imgidx}, [M N], 'bilinear');
-            
-            for i=1:size(sampleIndexSelected,1)
-                %% Fill in infomat
-                infomat = infos_base;
-                infomat(:,1) = imgidx;
-                t_px = sampleIndexSelected(i, 3);
-                t_py = sampleIndexSelected(i, 4);
-                t_nx = sampleIndexSelected(i, 5);
-                t_ny = sampleIndexSelected(i, 6);
-                % 1. imgidx, 2.X, 3. Y, 
-                % 4. distance to P(NEXT), 5. distance to P(PREV),
-                % 6. Region number,
-                % 7. Angle(degree) based on P(PREV),
-                % 8. Angle(index) (horizontal:1, up:2, down:3)
-                infomat(:,4) = ...
-                    sqrt(((t_nx+0.5).*allOnesMat-infomat(:,2)).*((t_nx+0.5).*allOnesMat-infomat(:,2))+...
-                         ((t_ny+0.5).*allOnesMat-infomat(:,3)).*((t_ny+0.5).*allOnesMat-infomat(:,3)));
-                infomat(:,5) = ...
-                    sqrt(((t_px+0.5).*allOnesMat-infomat(:,2)).*((t_px+0.5).*allOnesMat-infomat(:,2))+...
-                         ((t_py+0.5).*allOnesMat-infomat(:,3)).*((t_py+0.5).*allOnesMat-infomat(:,3)));
-
-                for k=1:size(thresholdLength,2)
-                    infomat(find(infomat(:,5)<thresholdLength(1,k)&infomat(:,6)==0),6) = k;
-                end
-
-                if(opt.enable_angle)
-                    infomat(:,7) = ...
-                        atan2(-(infomat(:,3)-(t_py+0.5).*ones_), abs(infomat(:,2)-(t_px+0.5).*ones_));
-
-                    infomat(find(infomat(:,7)>-pi/4&infomat(:,7)<pi/4),8) = 1; %direction: horizontal
-                    infomat(find(infomat(:,7)>=pi/4),8) = 2; %direction: up
-                    infomat(find(infomat(:,7)<=-pi/4),8) = 3; %direction: down
-                end
-                infomatNear = [infomatNear ;  infomat(find(infomat(:,4)<opt.th_near & infomat(:,6)~=0),:)];
-                infomatFar = [infomatFar ;  infomat(find(infomat(:,4)>opt.th_far & infomat(:,6)~=0),:)];
-                for k=1:size(thresholdLength,2)
-                    infomatRegionedNear{k} = [infomatRegionedNear{k}; infomat(find(infomat(:,4)<opt.th_near & infomat(:,6) == k),:)];
-                    infomatRegionedFar{k} = [infomatRegionedNear{k}; infomat(find(infomat(:,4)>opt.th_far & infomat(:,6) == k),:)];
-                end
-            end
-            %% all positive samples
-            for i = find(infomatNear(:,1) == imgidx)'
-                singleSample = infomatNear(i,:);
-                countNearAll = countNearAll + 1;
-                angleIndex = singleSample(8);
-                regioni = singleSample(6);
-                singleFeature = [c1(singleSample(3),singleSample(2)) c2(singleSample(3),singleSample(2)) c3(singleSample(3),singleSample(2))...
-                                 i1(singleSample(3),singleSample(2)) i2(singleSample(3),singleSample(2)) i3(singleSample(3),singleSample(2))...
-                                 o1(singleSample(3),singleSample(2)) o2(singleSample(3),singleSample(2)) o3(singleSample(3),singleSample(2)) face(singleSample(3),singleSample(2))];
-                if(opt.enable_angle)
-                    featurePixelValueNear(countNearAll,num_feat_A*3*(regioni-1)+(angleIndex-1)*num_feat_A+1:num_feat_A*3*(regioni-1)+angleIndex*num_feat_A)=singleFeature(:);
-                else
-                    featurePixelValueNear(countNearAll,num_feat_A*(regioni-1)+1:num_feat_A*regioni)=singleFeature(:);
-                end
-                
-            end
-            %% all negative samples
-            
-            for i = find(infomatFar(:,1) == imgidx)'
-                singleSample = infomatFar(i,:);
-                countFarAll = countFarAll + 1;
-                angleIndex = singleSample(8);
-                regioni = singleSample(6);
-                singleFeature = [c1(singleSample(3),singleSample(2)) c2(singleSample(3),singleSample(2)) c3(singleSample(3),singleSample(2))...
-                                 i1(singleSample(3),singleSample(2)) i2(singleSample(3),singleSample(2)) i3(singleSample(3),singleSample(2))...
-                                 o1(singleSample(3),singleSample(2)) o2(singleSample(3),singleSample(2)) o3(singleSample(3),singleSample(2)) face(singleSample(3),singleSample(2))];
-                if(opt.enable_angle)
-                    featurePixelValueFar(countFarAll,num_feat_A*3*(regioni-1)+(angleIndex-1)*num_feat_A+1:num_feat_A*3*(regioni-1)+angleIndex*num_feat_A)=singleFeature(:);
-                else
-                    featurePixelValueFar(countFarAll,num_feat_A*(regioni-1)+1:num_feat_A*regioni)=singleFeature(:);
-                end
-            end
-            
-        end
-        %% Now we have all Far and Near pixel samples and going to pick part of them
-        sampleSizeNear = zeros(1,opt.n_region);
-        sampleSizeFar = zeros(1,opt.n_region);
-        sampleIndexNear = {};
-        sampleIndexFar = {};
-        for k = 1:opt.n_region
-            sampleSizeNear(k)= size(infomatRegionedNear{k},1);
-            sampleSizeFar(k)= size(infomatRegionedFar{k},1);
-        end
-
-        featureMatNear = [];
-        featureMatFar = [];
-        indexShift = 0;
-        countNear = sum(sampleSizeNear);
-        countFar = sum(sampleSizeFar);
-        %% select positive samples
-        
-            featureMatNear = featurePixelValueNear(1:countNear,:);
-            
-        %% select negative samples
-       
-            featureMatFar = featurePixelValueFar(1:countFar,:);
-            
-        %% Finishing selecting samples, start to train
-        fprintf([num2str(toc), ' seconds \n']); 
-        featureMat = [featureMatNear; featureMatFar];
-        
-        labelMat = [ones(countNear, 1); zeros(countFar, 1)];
-        
-        fprintf('Training...\n'); tic
-        info_tune = {};
-
-        fprintf('|tune|');
-        [m_,n_] = size(featureMat);
-        [info_tune.weight,info_tune.resnorm,info_tune.residual,info_tune.exitflag,info_tune.output,info_tune.lambda]  =  lsqlin(featureMat, labelMat,-eye(n_,n_),zeros(n_,1));
-        fprintf([num2str(toc), ' seconds \n']);
-
-        clear featureMat labelMat
-
-        if(order_fromfirst == 5) %% WTF?!?!
-            order_fromfirst_ = 0;
-        else
-            order_fromfirst_ = order_fromfirst;
-        end
-        
-        mInfo_tune{order_fromfirst} = info_tune;
-
-        clear info_tune
-     end
-     mNSS_tune={};
+    clear info_tune
+end
+mNSS_tune={};
 opt.end_time = datestr(now,'dd-mmm-yyyy HH:MM:SS');
 time_stamp = datestr(now,'yyyymmddHHMMSS');
 savefile = sprintf('../Output/storage/EXP_%s_angle%dregion%dTestSub%d_%s.mat', ...

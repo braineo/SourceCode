@@ -19,7 +19,8 @@ tool = toolFunc(opt); % return distance on screen by angle? not really understan
 %% initialize settings
 positiveSampleSize = opt.posisize;
 negativeSampleSize = zeros(1,6);
-
+positiveSampleCount = zeros(1,6);
+negativeSampleCount = zeros(1,6);
 negativeSampleSize(1) = opt.posisize * opt.ngrate;
 negRatio = negativeSampleSize(1)/sampleinfoStat{subjecti}.NegativeRegion(1);
 for regioni = 2:6
@@ -32,8 +33,6 @@ for triali = 1:opt.n_trial;
     fprintf('Start Calculation on Subject#%d, Trial#%d...\n',subjecti, triali);
     countNearAll = 0;
     countFarAll = 0;
-    positiveSampleCount = zeros(1,6);
-    negativeSampleCount = zeros(1,6);
     num_feat_A = 10; %total number of features
     sampleReadyFlag = zeros(1,12);
     if(opt.enable_angle)

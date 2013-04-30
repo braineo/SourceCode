@@ -10,11 +10,11 @@ info.start_time = datestr(now,'dd-mmm-yyyy HH:MM:SS');
 
 %% ----------------- TEMPLATE -----------------------------
 fprintf('Load EXPALLFixations, EXPALLFeatures...'); tic
-% load('../Output/storage/EXPALLFixations.mat'); % EXPALLFixations
-% load('../Output/storage/EXPALLFeatures.mat'); % ALLFeatures
-% load('../Output/storage/EXPfaceFeatures.mat'); % faceFeatures
-% load('../Output/storage/.sampleStat1st.mat');
-% load('../Output/storage/sampleInfoSaccade1.mat');
+load('../Output/storage/EXPALLFixations.mat'); % EXPALLFixations
+load('../Output/storage/EXPALLFeatures.mat'); % ALLFeatures
+load('../Output/storage/EXPfaceFeatures.mat'); % faceFeatures
+load('../Output/storage/sampleInfo.mat');
+load('../Output/storage/sampleInfoSaccade1.mat');
 fprintf([num2str(toc), ' seconds \n']);
 
 opt = {};
@@ -50,7 +50,7 @@ clear opt
 opt = opt_base;
 opt.posisize = 1500;
 opt.ngrate = 20;
-opt.n_trial = 20;
+opt.n_trial = 1;
 opt.n_order_fromfirst = 1;
 opt.thresholdLengthType = 's_uni'; %
 
@@ -60,7 +60,7 @@ clear opt
 
 info.opt_base = opt_base;
 
-for subjecti = 1:15
+for subjecti = 1:1
     
     opt = opt_base;
     opt.n_region = 6; %fixed, do not change it.
