@@ -4,7 +4,7 @@ clear vals_tune
 
 regioni = 6;
 time_stamp = datestr(now,'yyyymmddHHMM');
-subjecti = 1;
+for subjecti = 1:15
     outputcsv = sprintf('testSubject#%d.csv',subjecti);
 %     outputcsv = sprintf('allSample_alltestSubjectNSS.csv');
     fid = fopen(outputcsv, 'w');
@@ -19,5 +19,5 @@ subjecti = 1;
     fprintf(fid, ',%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n', mean(vals_tune),std(vals_tune));
 %     fprintf(fid, ',%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n', vals_tune);
     fclose(fid);
-
+end
 

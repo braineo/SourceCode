@@ -44,7 +44,7 @@ function [sampleInfo, opt] = makeSampleInfo(opt_set,saccadeData)
         fprintf('---------------- Subject#: %d\n', subjecti);
         
         
-        for nthi = 1:nthSaccade
+         nthi = nthSaccade;
             fprintf('---------------- nthSaccade: %d\n', nthi);
             thresholdLength = opt.thresholdLength{nthi};
             sample_saccade = subjectSaccade{subjecti};
@@ -107,10 +107,9 @@ function [sampleInfo, opt] = makeSampleInfo(opt_set,saccadeData)
                     end
                 end
                 
-                sampleInfo{nthi}{subjecti}{imgi}{1} = infomatRegionedNear;
-                sampleInfo{nthi}{subjecti}{imgi}{2} = infomatRegionedFar;
+                sampleInfo{subjecti}{imgi}{1} = infomatRegionedNear;
+                sampleInfo{subjecti}{imgi}{2} = infomatRegionedFar;
                 
             end
         end
     end
-end

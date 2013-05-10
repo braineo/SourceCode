@@ -13,8 +13,8 @@ fprintf('Load EXPALLFixations, EXPALLFeatures...'); tic
 % load('../Output/storage/EXPALLFixations.mat'); % EXPALLFixations
 % load('../Output/storage/EXPALLFeatures.mat'); % ALLFeatures
 % load('../Output/storage/EXPfaceFeatures.mat'); % faceFeatures
-% load('../Output/storage/.sampleStat1st.mat');
-% load('../Output/storage/sampleInfoSaccade1.mat');
+% load('../Resource/sampleInfo/sampleStat1st.mat');
+% load('../Resource/sampleInfo/sampleInfoSaccade1.mat');
 fprintf([num2str(toc), ' seconds \n']);
 
 opt = {};
@@ -48,7 +48,7 @@ clear opt
 
 %% ----------------- SETTING -----------------------------
 opt = opt_base;
-opt.posisize = 1500;
+opt.posisize = 1000;
 opt.ngrate = 20;
 opt.n_trial = 20;
 opt.n_order_fromfirst = 1;

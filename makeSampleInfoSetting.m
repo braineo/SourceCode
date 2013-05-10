@@ -43,7 +43,7 @@ opt = opt_base;
 opt.posisize = 50000;
 opt.ngrate = 20;
 opt.n_trial = 20;
-opt.n_order_fromfirst = 5;
+% opt.n_order_fromfirst = 5;
 opt.thresholdLengthType = 's_uni'; %
 opt.allAreTrainingSample = 1;
 opt_base = opt;
@@ -51,13 +51,15 @@ clear opt
 %% ----------------- SETTING -----------------------------
 
 info.opt_base = opt_base;
-for regioni = 6;
+for saccadeOrder = 1:5
+    
     opt = opt_base;
-    opt.n_region = regioni;
+    opt.n_order_fromfirst = saccadeOrder;
+    opt.n_region = 6;
     opt.enable_angle = 1;
 
-    [sampleInfo, Info] = makeSampleInfo(opt, EXPALLFixations);
+    [sampleinfo, Info] = makeSampleInfo(opt, EXPALLFixations);
+    savefile = sprintf('../Output/storage/sampleInfoSaccade%d.mat',saccadeOrder);
+save(savefile,'sampleinfo','Info','-v7.3');
 end
 info.end_time = datestr(now,'dd-mmm-yyyy HH:MM:SS')
-savefile = sprintf('../Output/storage/sampleInfo.mat');
-save(savefile,'sampleInfo','Info','-v7.3');
