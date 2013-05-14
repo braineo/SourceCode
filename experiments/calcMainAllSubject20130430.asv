@@ -79,37 +79,29 @@ for triali = 1:opt.n_trial;
     posSampleRandIdx = posSampleRandIdx(1:positiveSampleSize);
     negSampleRandIdx = negSampleRandIdx(1:negativeSampleSize(regioni));
     
-    %% Postive Samples
     for i = posSampleRandIdx
         singleSample = allPositiveSampleInRegion(i,:);
-        angleIndex = singleSample(8);
+        
     
         sampleinfo{subjecti}{imgidx}{1}{regioni}(i,:)
         
         
-        c1 = imresize(featureGBVS{singleSample(1)}.graphbase.scale_maps{1}{1}, [M N], 'bilinear');
-        c2 = imresize(featureGBVS{singleSample(1)}.graphbase.scale_maps{1}{2}, [M N], 'bilinear');
-        c3 = imresize(featureGBVS{singleSample(1)}.graphbase.scale_maps{1}{3}, [M N], 'bilinear');
-        i1 = imresize(featureGBVS{singleSample(1)}.graphbase.scale_maps{2}{1}, [M N], 'bilinear');
-        i2 = imresize(featureGBVS{singleSample(1)}.graphbase.scale_maps{2}{2}, [M N], 'bilinear');
-        i3 = imresize(featureGBVS{singleSample(1)}.graphbase.scale_maps{2}{3}, [M N], 'bilinear');
-        o1 = imresize(featureGBVS{singleSample(1)}.graphbase.scale_maps{3}{1}, [M N], 'bilinear');
-        o2 = imresize(featureGBVS{singleSample(1)}.graphbase.scale_maps{3}{2}, [M N], 'bilinear');
-        o3 = imresize(featureGBVS{singleSample(1)}.graphbase.scale_maps{3}{3}, [M N], 'bilinear');
+        c1 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{1}{1}, [M N], 'bilinear');
+        c2 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{1}{2}, [M N], 'bilinear');
+        c3 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{1}{3}, [M N], 'bilinear');
+        i1 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{2}{1}, [M N], 'bilinear');
+        i2 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{2}{2}, [M N], 'bilinear');
+        i3 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{2}{3}, [M N], 'bilinear');
+        o1 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{3}{1}, [M N], 'bilinear');
+        o2 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{3}{2}, [M N], 'bilinear');
+        o3 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{3}{3}, [M N], 'bilinear');
 
-        color = imresize(featureGBVS{singleSample(1)}.graphbase.top_level_feat_maps{1}, [M N], 'bilinear');
-        intensity = imresize(featureGBVS{singleSample(1)}.graphbase.top_level_feat_maps{2}, [M N], 'bilinear');
-        orientation = imresize(featureGBVS{singleSample(1)}.graphbase.top_level_feat_maps{3}, [M N], 'bilinear');
-        face = imresize(faceFeatures{singleSample(1)}, [M N], 'bilinear');
+        color = imresize(featureGBVS{imgidx}.graphbase.top_level_feat_maps{1}, [M N], 'bilinear');
+        intensity = imresize(featureGBVS{imgidx}.graphbase.top_level_feat_maps{2}, [M N], 'bilinear');
+        orientation = imresize(featureGBVS{imgidx}.graphbase.top_level_feat_maps{3}, [M N], 'bilinear');
+        face = imresize(faceFeatures{imgidx}, [M N], 'bilinear');
         
-        singleFeature = [c1(singleSample(3),singleSample(2)) c2(singleSample(3),singleSample(2)) c3(singleSample(3),singleSample(2))...
-                                 i1(singleSample(3),singleSample(2)) i2(singleSample(3),singleSample(2)) i3(singleSample(3),singleSample(2))...
-                                 o1(singleSample(3),singleSample(2)) o2(singleSample(3),singleSample(2)) o3(singleSample(3),singleSample(2)) face(singleSample(3),singleSample(2))];
-                        if(opt.enable_angle)
-                            featurePixelValueNear(countNearAll,num_feat_A*3*(regioni-1)+(angleIndex-1)*num_feat_A+1:num_feat_A*3*(regioni-1)+angleIndex*num_feat_A)=singleFeature(:);
-                        else
-                            featurePixelValueNear(countNearAll,num_feat_A*(regioni-1)+1:num_feat_A*regioni)=singleFeature(:);
-                        end
+        %% Postive Samples
         
         
       
@@ -126,7 +118,14 @@ for triali = 1:opt.n_trial;
                         positiveSampleCount(regioni) = positiveSampleCount(regioni) + 1;
                         countNearAll = countNearAll + 1;
                         angleIndex = singleSample(8);  
-                        
+                        singleFeature = [c1(singleSample(3),singleSample(2)) c2(singleSample(3),singleSample(2)) c3(singleSample(3),singleSample(2))...
+                                 i1(singleSample(3),singleSample(2)) i2(singleSample(3),singleSample(2)) i3(singleSample(3),singleSample(2))...
+                                 o1(singleSample(3),singleSample(2)) o2(singleSample(3),singleSample(2)) o3(singleSample(3),singleSample(2)) face(singleSample(3),singleSample(2))];
+                        if(opt.enable_angle)
+                            featurePixelValueNear(countNearAll,num_feat_A*3*(regioni-1)+(angleIndex-1)*num_feat_A+1:num_feat_A*3*(regioni-1)+angleIndex*num_feat_A)=singleFeature(:);
+                        else
+                            featurePixelValueNear(countNearAll,num_feat_A*(regioni-1)+1:num_feat_A*regioni)=singleFeature(:);
+                        end
                     end
                 end
             end
