@@ -50,7 +50,7 @@ clear opt
 opt = opt_base;
 opt.posisize = 1000;
 opt.ngrate = 20;
-opt.n_trial = 20;
+opt.n_trial = 1;
 opt.n_order_fromfirst = 1;
 opt.thresholdLengthType = 's_uni'; %
 
@@ -60,7 +60,7 @@ clear opt
 
 info.opt_base = opt_base;
 
-for subjecti = 1:15
+for subjecti = 1:1
     
     opt = opt_base;
     opt.n_region = 6; %fixed, do not change it.

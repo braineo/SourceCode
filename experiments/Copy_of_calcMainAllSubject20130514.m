@@ -7,10 +7,8 @@
 % faceFeature: Gaussian face feature
 % subjectIndex: ID of test subject
 
-% no random selection, use all saccades and all samples, no trail loop
-function  [mInfo_tune, mNSS_tune, opt] = calcMainAllSubject20130430(opt_set, EXPALLFixations, featureGBVS, faceFeatures, sampleinfo, sampleinfoStat,subjecti)
+function  [mInfo_tune, mNSS_tune, opt] = calcMainAllSubject20130514(opt_set, EXPALLFixations, featureGBVS, faceFeatures, sampleinfo, sampleinfoStat,subjecti)
 
-load RandomSeed_20121220
 opt = opt_set;
 opt.start_time = datestr(now,'dd-mmm-yyyy HH:MM:SS');
 M = opt.M;
@@ -43,49 +41,13 @@ for triali = 1:opt.n_trial;
         featurePixelValueNear = zeros(positiveSampleSize*opt.n_region, num_feat_A*opt.n_region);
         featurePixelValueFar = zeros(sum(negativeSampleSize),num_feat_A*opt.n_region);
     end
-    
-    %% picture 1:370 training set, picture 371:400 test set
-    % for every region, make a array storing all the sample then pick
-    % randomly
-            
+    imgIdxReorder = randperm(imgSize);
     fprintf('Creating Feature Matrix...\n'); tic
-    for regioni = 1:6
-        allPositiveSampleInRegion = zeros(sampleinfoStat{subjecti}.PositiveRegion(regioni),8);
-        allNegativeSampleInRegion = zeros(sampleinfoStat{subjecti}.NegativeRegion(regioni),8);
-        posCount = 1;
-        negCount = 1;
-    for imgidx = 1:370
+    for imgidx = imgIdxReorder
         
     if(ismember(imgidx, sampleinfoStat{subjecti}.EmptyCell))
         continue;
-    elseif(isempty(sampleinfo{subjecti}{imgidx}{1}{regioni}))
-        continue;
     else
-        tmpPosSize = size(sampleinfo{subjecti}{imgidx}{1}{regioni},1);
-        allPositiveSampleInRegion(posCount : posCount+tmpPosSize-1,:) = sampleinfo{subjecti}{imgidx}{1}{regioni};
-        posCount = posCount + tmpPosSize;
-        
-        tmpNegSize = size(sampleinfo{subjecti}{imgidx}{2}{regioni},1);
-        allNegativeSampleInRegion(negCount : negCount+tmpNegSize-1,:) = sampleinfo{subjecti}{imgidx}{2}{regioni};
-        negCount = negCount + tmpNegSize;
-    end
-    end
-    
-    allPositiveSampleInRegion = allPositiveSampleInRegion(1:posCount-1,:);
-    allNegativeSampleInRegion = allNegativeSampleInRegion(1:negCount-1,:);
-    
-    posSampleRandIdx = randperm(posCount-1);
-    negSampleRandIdx = randperm(negCount-1);
-    posSampleRandIdx = posSampleRandIdx(1:positiveSampleSize);
-    negSampleRandIdx = negSampleRandIdx(1:negativeSampleSize(regioni));
-    
-    for i = posSampleRandIdx
-        singleSample = allPositiveSampleInRegion(i,:);
-        
-    
-        sampleinfo{subjecti}{imgidx}{1}{regioni}(i,:)
-        
-        
         c1 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{1}{1}, [M N], 'bilinear');
         c2 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{1}{2}, [M N], 'bilinear');
         c3 = imresize(featureGBVS{imgidx}.graphbase.scale_maps{1}{3}, [M N], 'bilinear');
@@ -102,9 +64,7 @@ for triali = 1:opt.n_trial;
         face = imresize(faceFeatures{imgidx}, [M N], 'bilinear');
         
         %% Postive Samples
-        
-        
-      
+        for regioni = 1:6
             if(isempty(sampleinfo{subjecti}{imgidx}{1}{regioni}))
                continue;
             else
