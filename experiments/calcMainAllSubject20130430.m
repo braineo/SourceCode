@@ -7,7 +7,7 @@
 % faceFeature: Gaussian face feature
 % subjectIndex: ID of test subject
 
-function  [mInfo_tune, mNSS_tune, opt] = calcMainAllSubject20130514(opt_set, EXPALLFixations, featureGBVS, faceFeatures, sampleinfo, sampleinfoStat,subjecti)
+function  [mInfo_tune, mNSS_tune, opt] = calcMainAllSubject20130430(opt_set, EXPALLFixations, featureGBVS, faceFeatures, sampleinfo, sampleinfoStat,subjecti)
 
 opt = opt_set;
 opt.start_time = datestr(now,'dd-mmm-yyyy HH:MM:SS');
