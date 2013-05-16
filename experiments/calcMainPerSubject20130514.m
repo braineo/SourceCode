@@ -154,8 +154,8 @@ function  [mInfo_tune, mNSS_tune, opt] = calcMainPerSubject20130514(opt_set, EXP
                 end
                 
             end
-            selectedPositiveSample = [selectedPositiveSample , selectedPositiveSampleInRegion];
-            selectedNegativeSample = [selectedNegativeSample , selectedNegativeSampleInRegion];
+            selectedPositiveSample = [selectedPositiveSample ; selectedPositiveSampleInRegion];
+            selectedNegativeSample = [selectedNegativeSample ; selectedNegativeSampleInRegion];
 
         end
         fprintf([num2str(toc), ' seconds \n']);
