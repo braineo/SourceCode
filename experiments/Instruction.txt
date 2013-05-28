@@ -1,2 +1,3 @@
 1. calcMainAllSubject20130430.m read sample database and random pick sample based on picture unit
-2. calcMainAllSubject20130514.m read sample database and ture random sampling. Training set and test set is fixed
+2. calcMainAllSubject20130514.m read sample database and ture random sampling. Training set and test set is fixed ???????
+3. 
