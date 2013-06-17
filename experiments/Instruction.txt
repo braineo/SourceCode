@@ -1,3 +1,5 @@
 1. calcMainAllSubject20130430.m read sample database and random pick sample based on picture unit
-2. calcMainAllSubject20130514.m read sample database and ture random sampling. Training set and test set is fixed, algorithm save 
-3. 
+2. calcMainAllSubject20130514.m read sample database and true random sampling. Training set and test set is fixed, algorithm save lots of memory but it was very slow
+3. calcMainAllSubject20130520.m almost the same with No.2 but uses more than 14GB memory, care when run it.
+4. calcMainAllSubject20130613.m For every test subject, use all samples without random sampling, cost over 3800 sec for each person, depend on your PC spec.
+5. calcMainAllSubject20130617.m For every test subject, use all samples without random sampling, using face fixations while not considering the weight of face
