@@ -60,7 +60,7 @@ clear opt
 
 info.opt_base = opt_base;
 
-for subjecti = 1:1
+for subjecti = 1:15
     
     opt = opt_base;
     opt.n_region = 6; %fixed, do not change it.
@@ -75,5 +75,5 @@ for subjecti = 1:1
 end
 
 info.end_time = datestr(now,'dd-mmm-yyyy HH:MM:SS')
-savefile = sprintf('../Output/storage/EXP20130520_%s.mat', info.time_stamp);
+savefile = sprintf('../Output/storage/EXP20130613_%s.mat', info.time_stamp);
 save(savefile,'EXP_INDV_REGION_NOANGLE_ms6','info','-v7.3');
