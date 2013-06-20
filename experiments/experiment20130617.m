@@ -60,7 +60,7 @@ clear opt
 
 info.opt_base = opt_base;
 
-for subjecti = 1:1
+for subjecti = 1:15
     
     opt = opt_base;
     opt.n_region = 6; %fixed, do not change it.
