@@ -158,9 +158,9 @@ function  [mInfo_tune, mNSS_tune, opt] = calcMainPerSubject20130617(opt_set, EXP
         testingsamles = getIndiviTestSamples(testSaccadeImageIndex, EXPALLFixations, opt, subjecti);
         thresholdLength  =  opt.thresholdLength;
         % dirty code up there
-        NSS_tune = testSaliencymap(opt, featureGBVS, faceFeatures, thresholdLength, info_tune.weight, testingsamles, order_fromfirst_);
+        %NSS_tune = testSaliencymap(opt, featureGBVS, faceFeatures, thresholdLength, info_tune.weight, testingsamles, order_fromfirst_);
         mInfo_tune{triali} = info_tune;
-        mNSS_tune{triali} = NSS_tune;
+        mNSS_tune{triali} = [];%NSS_tune;
         clear info_tune
     end
 
