@@ -68,7 +68,7 @@ for subjecti = 1:15
     fprintf('========================================================= angle: %d region: %d\n', opt.enable_angle, opt.n_region);
     RET = {};
     opt.thresholdLength = Info.thresholdLength{opt.n_order_fromfirst};
-    [RET.mInfo_tune, RET.mNSS_tune, RET.opt_ret] = calcMainPerSubject20130627(opt, EXPALLFixations, ALLFeatures, faceFeatures, sampleinfo,sampleinfoStat, subjecti);
+    [RET.mInfo_tune, RET.mNSS_tune, RET.opt_ret] = calcMainPerSubject20130702(opt, EXPALLFixations, ALLFeatures, faceFeatures, sampleinfo,sampleinfoStat, subjecti);
     EXP_INDV_REGION_NOANGLE_ms6{subjecti} = RET;
     clear opt RET
     

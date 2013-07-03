@@ -9,7 +9,7 @@
 % subjectIndex: ID of test subject
 
 % Try to use all samples for individuals
-function  [mInfo_tune, mNSS_tune, opt] = calcMainPerSubject20130627(opt_set, EXPALLFixations, featureGBVS, faceFeatures, sampleinfo, sampleinfoStat,subjecti)
+function  [mInfo_tune, mNSS_tune, opt] = calcMainPerSubject20130702(opt_set, EXPALLFixations, featureGBVS, faceFeatures, sampleinfo, sampleinfoStat,subjecti)
 
     opt = opt_set;
     opt.start_time = datestr(now,'dd-mmm-yyyy HH:MM:SS');
@@ -36,7 +36,7 @@ function  [mInfo_tune, mNSS_tune, opt] = calcMainPerSubject20130627(opt_set, EXP
             featurePixelValueFar = zeros(sum(negativeSampleSize),num_feat_A*opt.n_region);
         end
 
-        %% picture 1:400 training set, picture 371:400 test set excluding face images
+        %% picture 1:400 training set, picture 371:400 test set
 
         fprintf('Randomly sampling...\n'); tic
         selectedPositiveSample = [];
@@ -50,7 +50,7 @@ function  [mInfo_tune, mNSS_tune, opt] = calcMainPerSubject20130627(opt_set, EXP
             allNegativeSampleInRegion = zeros(sampleinfoStat{subjecti}.NegativeRegion(regioni),8);
 
            for imgidx = 1:400
-               if(ismember(imgidx, sampleinfoStat{subjecti}.EmptyCell) || max(max(faceFeatures{imgidx}))==1)
+               if(ismember(imgidx, sampleinfoStat{subjecti}.EmptyCell))
                    continue;
                end
                if(~isempty(sampleinfo{subjecti}{imgidx}{1}{regioni}))
@@ -131,11 +131,12 @@ function  [mInfo_tune, mNSS_tune, opt] = calcMainPerSubject20130627(opt_set, EXP
             end
         end
         fprintf([num2str(toc), ' seconds \n']);
+        
+
+        
+
 
         %%  start to train
-        
-        featurePixelValueFar = featurePixelValueFar(1:countFarAll,:);
-        featurePixelValueNear = featurePixelValueNear(1:countNearAll,:);
 
         featureMat = [featurePixelValueNear; featurePixelValueFar];
 
