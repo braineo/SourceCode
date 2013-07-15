@@ -1,6 +1,6 @@
 %% ACPR experiment 1 generate generic models
 
-function  [mInfo_tune, mNSS_tune, opt] = EXP1main20130715(opt_set, featureGBVS, faceFeatures, sampleinfo, sampleinfoStat,subjecti)
+function  [mInfo_tune, mNSS_tune, opt] = EXP1main20130715(opt_set,EXPALLFixations, featureGBVS, faceFeatures, sampleinfo, sampleinfoStat,subjecti)
 
     opt = opt_set;
     opt.start_time = datestr(now,'dd-mmm-yyyy HH:MM:SS');
@@ -147,17 +147,14 @@ function  [mInfo_tune, mNSS_tune, opt] = EXP1main20130715(opt_set, featureGBVS, 
         allNegativeSample = [allNegativeSample;featurePixelValueFar];
     end
         fprintf([num2str(toc), ' seconds \n']);
-        
-
-        
-
+        clear featurePixelValueFar featurePixelValueNear;
 
         %%  start to train
 
         featureMat = [allPositiveSample; allNegativeSample];
 
         labelMat = [ones(size(allPositiveSample,1), 1); zeros(size(allNegativeSample,1), 1)];
-
+        clear allPositiveSample allNegativeSample;
         fprintf('Training...\n'); tic
         info_tune = {};
 
@@ -175,13 +172,13 @@ function  [mInfo_tune, mNSS_tune, opt] = EXP1main20130715(opt_set, featureGBVS, 
         end
         % generate test saccade samples, dirty code down here
 
-        testSaccadeImageIndex = 371:400;
-        testingsamles = getIndiviTestSamples(testSaccadeImageIndex, EXPALLFixations, opt, subjecti);
+        testSaccadeImageIndex = 1:100;
+        testingsamles = getIndiviTestSamples(testSaccadeImageIndex, EXPALLFixations, opt, subjectNG);
         thresholdLength  =  opt.thresholdLength;
         % dirty code up there
         NSS_tune = testSaliencymap(opt, featureGBVS, faceFeatures, thresholdLength, info_tune.weight, testingsamles, order_fromfirst_);
         mInfo_tune{triali} = info_tune;
         mNSS_tune{triali} = NSS_tune;
-        traili = traili + 1;
+        
         clear info_tune
     end

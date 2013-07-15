@@ -9,6 +9,7 @@ info.start_time = datestr(now,'dd-mmm-yyyy HH:MM:SS');
 %% ----------------- TEMPLATE -----------------------------
 fprintf('Load EXPALLFixations, EXPALLFeatures...'); tic
 % load('../Output/storage/EXPALLFeatures.mat'); % ALLFeatures
+load('../Output/storage/EXPALLFixations.mat'); % EXPALLFixations
 % load('../Output/storage/EXPfaceFeatures.mat'); % faceFeatures
 % load('../Resource/sampleInfo/sampleStat1st.mat');
 % load('../Resource/sampleInfo/sampleInfoSaccade1.mat');
@@ -67,7 +68,7 @@ for subjecti = 1:1
     fprintf('========================================================= angle: %d region: %d\n', opt.enable_angle, opt.n_region);
     RET = {};
     opt.thresholdLength = Info.thresholdLength{opt.n_order_fromfirst};
-    [RET.mInfo_tune, RET.mNSS_tune, RET.opt_ret] = EXP1main20130715(opt, ALLFeatures, faceFeatures, sampleinfo,sampleinfoStat, subjecti);
+    [RET.mInfo_tune, RET.mNSS_tune, RET.opt_ret] = EXP1main20130715(opt,EXPALLFixations, ALLFeatures, faceFeatures, sampleinfo,sampleinfoStat, subjecti);
     EXP_INDV_REGION_NOANGLE_ms6{subjecti} = RET;
     clear opt RET
     
