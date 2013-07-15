@@ -7,7 +7,7 @@ clear vals_tune
 
 regioni = 6;
 time_stamp = datestr(now,'yyyymmddHHMM');
-for subjecti = 1:1
+for subjecti = 7:7
     outputcsv = sprintf('testSubject_%d.csv',subjecti);
     fid = fopen(outputcsv, 'w');
 
