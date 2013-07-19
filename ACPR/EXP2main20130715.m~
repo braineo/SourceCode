@@ -14,8 +14,8 @@ function  [mInfo_tune, mNSS_tune, opt] = EXP2main20130715(opt_set, featureGBVS, 
     negativeSampleSize = sampleinfoStat{subjecti}.NegativeRegion;
 
     order_fromfirst = opt.n_order_fromfirst;
-    setSize = opt.setSize;
-    for imgseti = 1:opt.imgSet
+
+    for imgseti = 1:10;
         fprintf('Start Calculation on Subject#%d, image set#%d...\n',subjecti, imgseti);
         
         countNearAll = 0;
@@ -41,7 +41,7 @@ function  [mInfo_tune, mNSS_tune, opt] = EXP2main20130715(opt_set, featureGBVS, 
             allPositiveSampleInRegion = zeros(sampleinfoStat{subjecti}.PositiveRegion(regioni),8);
             allNegativeSampleInRegion = zeros(sampleinfoStat{subjecti}.NegativeRegion(regioni),8);
 
-           for imgidx = (imgseti-1)*setSize+1:imgseti*setSize
+           for imgidx = (imgseti-1)*size+1:imgseti*40
                if(ismember(imgidx, sampleinfoStat{subjecti}.EmptyCell))
                    continue;
                end
