@@ -2,11 +2,12 @@
 dMatrix = zeros(15,15);
 pMatrix = zeros(15,15);
 statsMat = cell(15,15);
-left = zeros(10,6);
-right = zeros(10,6);
+subsetSize = size(EXP_INDV_REGION_NOANGLE_ms6{1}.mInfo_tune,2);
+left = zeros(subsetSize,6);
+right = zeros(subsetSize,6);
 for subjectLeft = 1:15
     for subjectRight = subjectLeft+1:15
-        for i = 1:10
+        for i = 1:subsetSize
             
             for regioni = 1:6
                 rangeL = (regioni-1)*10+10;
@@ -16,6 +17,8 @@ for subjectLeft = 1:15
                 
             end
         end
+        left = left/norm(left);
+        right = right/norm(right);
         X = [left;right];
         group = zeros(size(X,1),1);
         group(1:size(left,1)) = subjectLeft;
@@ -31,5 +34,14 @@ for subjectLeft = 1:15
     end
 end
 
+for i = 1:15
+    for j = 1:15
+        if(i>j)
+            dMatrix(i,j) = dMatrix(j,i);
+            pMatrix(i,j) = pMatrix(j,i);
+            statsMat{i,j} = statsMat{j,i};
+        end
+    end
+end
 % savefile = sprintf('../Result/ACPR/ACPR_EXP2colorChannel');
 % save(savefile,'dMatrix','pMatrix','statsMat','-v7.3');
