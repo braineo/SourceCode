@@ -24,8 +24,8 @@ for subjecti = 1:15
         
         
 end
-[COEFF,SCORE,latent,tsquare,explained] = princomp(X);
-% [d,p,stats] = manova1(X,group);
+%[COEFF,SCORE,latent,tsquare,explained] = princomp(X);
+[d,p,stats] = manova1(X,group);
 % parallelcoords(X,'Group',group)
 % savefile = sprintf('../Result/ACPR/ACPR_EXP2colorChannel');
 % save(savefile,'dMatrix','pMatrix','statsMat','-v7.3');
