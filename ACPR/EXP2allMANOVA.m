@@ -1,7 +1,4 @@
 %% MAVONA (All 10*6 dimentional)
-dMatrix = zeros(15,15);
-pMatrix = zeros(15,15);
-statsMat = cell(15,15);
 subsetSize = size(EXP_INDV_REGION_NOANGLE_ms6{1}.mInfo_tune,2);
 X = zeros(subsetSize*15,10*6);
 group = zeros(size(X,1),1);
@@ -26,6 +23,7 @@ for subjecti = 1:15
 end
 %[COEFF,SCORE,latent,tsquare,explained] = princomp(X);
 [d,p,stats] = manova1(X,group);
+manovacluster(stats,'average');
 % parallelcoords(X,'Group',group)
 % savefile = sprintf('../Result/ACPR/ACPR_EXP2colorChannel');
 % save(savefile,'dMatrix','pMatrix','statsMat','-v7.3');
