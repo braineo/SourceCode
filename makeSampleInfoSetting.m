@@ -51,15 +51,15 @@ clear opt
 %% ----------------- SETTING -----------------------------
 
 info.opt_base = opt_base;
-for saccadeOrder = 1:5
+for saccadeOrder = 1:1
     
     opt = opt_base;
     opt.n_order_fromfirst = saccadeOrder;
-    opt.n_region = 6;
+    opt.n_region = 3;
     opt.enable_angle = 1;
 
     [sampleinfo, Info] = makeSampleInfo(opt, EXPALLFixations);
-    savefile = sprintf('../Output/storage/sampleInfoSaccade%d.mat',saccadeOrder);
+    savefile = sprintf('../Output/storage/sampleInfoSaccade%d_3Region.mat',saccadeOrder);
 save(savefile,'sampleinfo','Info','-v7.3');
 end
 info.end_time = datestr(now,'dd-mmm-yyyy HH:MM:SS')
