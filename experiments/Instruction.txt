@@ -11,3 +11,5 @@
 6. calcMainAllSubject20130625.m To find how how many percentage of total sample is needed in order to get a precise result
 
 7. calcMainAllSubject20130627.m
+
+8. calcMainAllSubject20130906.m Find out how many pictures are needed to make saliency model coverage for a test subject (3 regions are divided)

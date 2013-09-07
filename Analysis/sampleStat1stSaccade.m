@@ -13,7 +13,7 @@ for subjecti = 1:15
             emptyImage = [emptyImage, imgi];
             continue;
         else
-        for regioni = 1:6
+        for regioni = 1:3
             tmpPos = size(sampleinfo{subjecti}{imgi}{1}{regioni},1);
             tmpNeg = size(sampleinfo{subjecti}{imgi}{2}{regioni},1);
             positiveSampleNumberAll = positiveSampleNumberAll + tmpPos;
@@ -32,5 +32,5 @@ for subjecti = 1:15
     sampleinfoStat{subjecti}.EmptyCell = emptyImage;
 end
 
-savefile = sprintf('../Output/storage/.sampleStat1st.mat');
+savefile = sprintf('../Output/storage/sampleStat1st_3region.mat');
 save(savefile,'sampleinfoStat','-v7.3');
