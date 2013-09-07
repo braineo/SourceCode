@@ -77,5 +77,5 @@ for subjecti = 1:15
 end
 
 info.end_time = datestr(now,'dd-mmm-yyyy HH:MM:SS')
-savefile = sprintf('../Output/storage/ACPR_EXP2%s.mat', info.time_stamp);
+savefile = sprintf('../Output/storage/ACPR_EXP2_%d_subsets%s.mat',opt.imgSet, info.time_stamp);
 save(savefile,'EXP_INDV_REGION_NOANGLE_ms6','info','-v7.3');
